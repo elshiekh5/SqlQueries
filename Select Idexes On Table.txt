@@ -1,0 +1,2 @@
+EXEC sp_helpindex '[[[SCHEMA-NAME.TABLE-NAME]]]'
+GO

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="pingback" href="https://sqlperformance.com/xmlrpc.php">
+
+<!-- This site is optimized with the Yoast SEO plugin v5.8 - https://yoast.com/wordpress/plugins/seo/ -->
+<title>Page not found - SQLPerformance.com</title>
+<meta name="robots" content="noindex,follow"/>
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="object" />
+<meta property="og:title" content="Page not found - SQLPerformance.com" />
+<meta property="og:site_name" content="SQLPerformance.com" />
+<script type='application/ld+json'>{"@context":"http:\/\/schema.org","@type":"WebSite","@id":"#website","url":"https:\/\/sqlperformance.com\/","name":"SQLPerformance.com","potentialAction":{"@type":"SearchAction","target":"https:\/\/sqlperformance.com\/?s={search_term_string}","query-input":"required name=search_term_string"}}</script>
+<!-- / Yoast SEO plugin. -->
+
+<link rel='dns-prefetch' href='//s0.wp.com' />
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.3\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.3\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/sqlperformance.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.9.1"}};
+			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55358,56794,8205,9794,65039],[55358,56794,8203,9794,65039]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='responsive-lightbox-prettyphoto-css'  href='https://sqlperformance.com/wp-content/plugins/responsive-lightbox/assets/prettyphoto/css/prettyPhoto.css?ver=1.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='stcr-plugin-style-css'  href='https://sqlperformance.com/wp-content/plugins/subscribe-to-comments-reloaded/includes/css/stcr-plugin-style.css?ver=4.9.1' type='text/css' media='all' />
+<link rel='stylesheet' id='wordpress-popular-posts-css-css'  href='https://sqlperformance.com/wp-content/plugins/wordpress-popular-posts/public/css/wpp.css?ver=4.0.12' type='text/css' media='all' />
+<link rel='stylesheet' id='worldwide-font-css'  href='//fonts.googleapis.com/css?family=Roboto+Condensed%3A300%2C400%2C600%2C700%2C800%2C900&#038;ver=4.9.1' type='text/css' media='all' />
+<link rel='stylesheet' id='worldwide-basic-style-css'  href='https://sqlperformance.com/wp-content/themes/worldwide/style.css?ver=4.9.1' type='text/css' media='all' />
+<link rel='stylesheet' id='worldwide-responsive-css'  href='https://sqlperformance.com/wp-content/themes/worldwide/css/responsive.css?ver=4.9.1' type='text/css' media='all' />
+<link rel='stylesheet' id='worldwide-basic-css'  href='https://sqlperformance.com/wp-content/themes/worldwide/css/basic.css?ver=4.9.1' type='text/css' media='all' />
+<link rel='stylesheet' id='jetpack_css-css'  href='https://sqlperformance.com/wp-content/plugins/jetpack/css/jetpack.css?ver=5.5.1' type='text/css' media='all' />
+<script type='text/javascript' src='https://sqlperformance.com/wp-includes/js/jquery/jquery.js?ver=1.12.4'></script>
+<script type='text/javascript' src='https://sqlperformance.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1'></script>
+<script type='text/javascript' src='https://sqlperformance.com/wp-content/plugins/responsive-lightbox/assets/prettyphoto/js/jquery.prettyPhoto.js?ver=1.7.2'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var rlArgs = {"script":"prettyphoto","selector":"lightbox","customEvents":"","activeGalleries":"1","animationSpeed":"normal","slideshow":"0","slideshowDelay":"5000","slideshowAutoplay":"0","opacity":"0.75","showTitle":"1","allowResize":"1","allowExpand":"1","width":"1080","height":"720","separator":"\/","theme":"pp_default","horizontalPadding":"20","hideFlash":"0","wmode":"opaque","videoAutoplay":"0","modal":"0","deeplinking":"0","overlayGallery":"1","keyboardShortcuts":"1","social":"0","woocommerce_gallery":"0"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://sqlperformance.com/wp-content/plugins/responsive-lightbox/js/front.js?ver=1.7.2'></script>
+<script type='text/javascript' src='https://sqlperformance.com/wp-content/plugins/subscribe-to-comments-reloaded/includes/js/stcr-plugin.js?ver=4.9.1'></script>
+<link rel='https://api.w.org/' href='https://sqlperformance.com/wp-json/' />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://sqlperformance.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://sqlperformance.com/wp-includes/wlwmanifest.xml" /> 
+<style data-context="foundation-flickity-css">/*! Flickity v2.0.2
+http://flickity.metafizzy.co
+---------------------------------------------- */.flickity-enabled{position:relative}.flickity-enabled:focus{outline:0}.flickity-viewport{overflow:hidden;position:relative;height:100%}.flickity-slider{position:absolute;width:100%;height:100%}.flickity-enabled.is-draggable{-webkit-tap-highlight-color:transparent;tap-highlight-color:transparent;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.flickity-enabled.is-draggable .flickity-viewport{cursor:move;cursor:-webkit-grab;cursor:grab}.flickity-enabled.is-draggable .flickity-viewport.is-pointer-down{cursor:-webkit-grabbing;cursor:grabbing}.flickity-prev-next-button{position:absolute;top:50%;width:44px;height:44px;border:none;border-radius:50%;background:#fff;background:hsla(0,0%,100%,.75);cursor:pointer;-webkit-transform:translateY(-50%);transform:translateY(-50%)}.flickity-prev-next-button:hover{background:#fff}.flickity-prev-next-button:focus{outline:0;box-shadow:0 0 0 5px #09F}.flickity-prev-next-button:active{opacity:.6}.flickity-prev-next-button.previous{left:10px}.flickity-prev-next-button.next{right:10px}.flickity-rtl .flickity-prev-next-button.previous{left:auto;right:10px}.flickity-rtl .flickity-prev-next-button.next{right:auto;left:10px}.flickity-prev-next-button:disabled{opacity:.3;cursor:auto}.flickity-prev-next-button svg{position:absolute;left:20%;top:20%;width:60%;height:60%}.flickity-prev-next-button .arrow{fill:#333}.flickity-page-dots{position:absolute;width:100%;bottom:-25px;padding:0;margin:0;list-style:none;text-align:center;line-height:1}.flickity-rtl .flickity-page-dots{direction:rtl}.flickity-page-dots .dot{display:inline-block;width:10px;height:10px;margin:0 8px;background:#333;border-radius:50%;opacity:.25;cursor:pointer}.flickity-page-dots .dot.is-selected{opacity:1}</style>
+<link rel='dns-prefetch' href='//v0.wordpress.com'/>
+<style type='text/css'>img#wpstats{display:none}</style><style>.ios7.web-app-mode.has-fixed header{ background-color: rgba(0,0,0,.88);}</style>			<style type="text/css" id="wp-custom-css">
+				@import  "https://fonts.googleapis.com/css?family=Open+Sans";
+@import  "https://fonts.googleapis.com/css?family=Montserrat";
+@import  "https://fonts.googleapis.com/css?family=Source+Code+Pro";
+@import  "https://fonts.googleapis.com/css?family=Noto+Sans";			</style>
+		<!--[if !IE]--><style> body { min-height:100vh!important; } </style><!--[endif]-->
+<link rel=stylesheet href="/wp-content/css/wp-geshi.css">
+</head>
+<body class="error404 group-blog">
+  <div class="page-header">
+    <div class="top-left-logo">
+      <a href="/" title="Blog Home"><img src="/wp-content/theme-images/SQLPerf-logo.png" alt="SQLPerformance.com by SentryOne"></a>
+    </div>
+    <div class="top-right-logo">
+      <a href="https://sentryone.com/" title="SentryOne"><img src="/wp-content/theme-images/SentryOne.png" class="top-right-so"></a>
+      <div class="social"><nobr>
+        <a href="mailto:community@sentryone.com" title="Send mail to community@sentryone.com"><img
+           src="/wp-content/theme-images/social/b-mail.png"></a><a
+           target=_blank href="https://twitter.com/SentryOne" title="twitter.com/SentryOne"><img
+           src="/wp-content/theme-images/social/b-tw.png"></a><a
+           target=_blank href="https://www.linkedin.com/company/129912" title="SentryOne on LinkedIn"><img
+           src="/wp-content/theme-images/social/b-li.png"></a><a
+           target=_blank href="https://www.facebook.com/SentryOne" title="SentryOne on Facebook"><img
+           src="/wp-content/theme-images/social/b-fb.png"></a><a href="/feed" target="_blank" title="RSS Feed"><img
+           src="/wp-content/theme-images/social/b-rss.png"></a></nobr>
+      </div>
+    </div>
+  </div>
+  <div class="navbar" style="padding-top:2px!important">
+    <form name="searchForm" action="/" onsubmit="return checkForm('f');">
+      <a class="headerlink" href="/" title="Home">Home</a>
+      <a class="headerlink" href="/archives" title="Monthly Archives">Archives</a>
+      <a class="headerlink" href="/authors" title="Authors">Authors</a>
+      <a class="headerlink" href="/categories" title="Categories">Categories</a>
+      <a class="headerlink" href="/about-sqlperformance" title="About SQLPerformance.com">About</a>
+      <a style="display:none" class="headerlink" href="/q-a-community" title="Q & A Community
+Answers.SQLPerformance.com">Q & A Community</a>
+      <a class="headerlink" href="javascript:void(0);" title="Search" style="padding-left:152px!important" onclick="checkForm('c');">GO</a>
+        <input type=search placeholder="Search..." value="" name="s" class="navsearch">
+    </form>
+    <script>
+      function checkForm(arg)
+      {
+        if (document.searchForm.s.value.trim() != '') { 
+          if (arg=='f') { return true; } 
+          if (arg=='c') { location.href='/?s='+document.searchForm.s.value; }
+        }
+        return false;
+      }
+    </script>
+  </div>
+<div class="pagewrapper">
+  <header class="page-header">
+    <h1 class="entry-title">404 Not Found</h1>
+  </header>
+<div class=tileSidebar style="margin-top:-40px"><div class="featbox"><a target=_blank href=https://www.sentryone.com/platform/vmware-performance-monitoring?utm_source=sqlperformance&utm_medium=banner&utm_campaign=vsentry-sidebar title="SentryOne : V Sentry"><img src=/wp-content/theme-images/feature/ad-vsentry.png class=feat></a>Get a unique view of resource utilization for VMware hosts and VMs, including vSphere topology.&nbsp; <nobr><a class=featlink target=_blank href=https://www.sentryone.com/platform/vmware-performance-monitoring?utm_source=sqlperformance&utm_medium=banner&utm_campaign=vsentry-sidebar title="SentryOne : V Sentry"><span class=txt>More</span> <b>&#8594;</b></a></nobr></div><div class="featbox"><b class=PromoHeadline>SentryOne Newsletters</b><p>The SQLPerformance.com bi-weekly newsletter keeps you up to speed on the most recent blog posts and forum discussions in the SQL Server community.<p>eNews is a bi-monthly newsletter with fun information about SentryOne, tips to help improve your productivity, and much more.<p style="text-align:right;margin:10px 0 4px 0"><a class=featlink target=_blank href=https://sentryone.com/community?utm_source=sqlperformance&utm_medium=banner&utm_campaign=subscribe-sidebar#newsletters><span class=txt>Subscribe</span> <b>&#8594;</b></a></div><div class="featbox"><b class=PromoHeadline>Featured Author</b><p><a href=/author/erinsqlskills-com><img title="Author : Erin Stellato" style="float:left" src=/wp-content/theme-images/heads/erinsqlskills-com.jpg></a>Erin Stellato is a Principal Consultant with SQLskills and a Microsoft Data Platform MVP.<p style="text-align:right;margin:10px 0 4px 0"><a class=featlink href=/author/erinsqlskills-com><span class=txt>Erin’s Posts</span> <b>&#8594;</b></a></div></div>
+  <div style="text-align:left!important">Sorry, the resource you were looking for was not found.
+
+    <img src="/wp-content/theme-images/SQLPerf404.png" alt="Sorry, the resource you were looking for was not found." style="width:700px!important">
+  </div>      
+</div>
+
+<div class="page-footer">
+  <div class="ad1"><a target=_blank href="https://sentryone.com" title="SentryOne
+Sponsor & Curator"><img src="/wp-content/theme-images/SentryOne.png" class="img1" alt="SentryOne
+Sponsor & Curator""></a></div>
+  <div class="ad2"><a target=_blank href="https://sqlskills.com" title="SQLskills
+Contributor & Partner"><img src="/wp-content/theme-images/SQLskills_footer.png" class="img2" alt="SQLskills
+Contributor & Partner"></a></div>
+  <div class="banner-ad"><a target=_blank href=https://sentryone.com/platform?utm_source=sqlperformance&utm_medium=banner&utm_campaign=Platform-icons><img src=/wp-content/ads/SQLPerf-SOBott.png alt="SentryOne Platform"></a></div>
+  <div class="copy-write">Design and content &copy; 2012-2017 SQL Sentry, LLC. &nbsp;All rights reserved. &nbsp;User contributions are licensed under <a target=_blank href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons">cc-sa with attribution required</a>.</div>
+</div>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<!-- Powered by WPtouch: 4.3.21 -->	<div style="display:none">
+	</div>
+<script type='text/javascript' src='https://s0.wp.com/wp-content/js/devicepx-jetpack.js?ver=201748'></script>
+<script type='text/javascript' src='https://sqlperformance.com/wp-includes/js/wp-embed.min.js?ver=4.9.1'></script>
+<script type='text/javascript' src='https://stats.wp.com/e-201748.js' async defer></script>
+<script type='text/javascript'>
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:5.5.1',blog:'38997029',post:'0',tz:'0',srv:'sqlperformance.com'} ]);
+	_stq.push([ 'clickTrackerInit', '38997029', '0' ]);
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ ga('create', 'UA-403212-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>

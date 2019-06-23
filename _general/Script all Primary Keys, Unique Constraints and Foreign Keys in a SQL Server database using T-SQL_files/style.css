@@ -1,0 +1,24 @@
+@font-face {
+      font-family: LouisChevrolet;
+      src: url("LouisChevrolet.ttf");
+    }
+    @font-face {
+      font-family: HelveticaNeueLTArabic-Bold;
+      src: url("HelveticaNeueLTArabic-Bold.ttf");
+    }
+    @font-face {
+      font-family: HelveticaNeueLTArabic-Roman;
+      src: url("HelveticaNeueLTArabic-Roman.ttf");
+    }
+    @font-face {
+      font-family: Arial-Bold;
+      src: url("Arial-Bold.ttf");
+    }
+    @font-face {
+      font-family: LouisBoldItalic;
+      src: url("LouisBoldItalic.ttf");
+    }
+    @font-face {
+      font-family: LouisRegular;
+      src: url("LouisRegular.ttf");
+    }

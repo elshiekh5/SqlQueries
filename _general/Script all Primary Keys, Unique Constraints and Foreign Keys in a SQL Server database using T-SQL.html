@@ -1,0 +1,1265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0140)https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/ -->
+<html class="js flexbox flexboxlegacy canvas canvastext webgl touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths gr__mssqltips_com" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+
+<!-- <meta http-equiv="X-UA-Compatible" content="IE=9" /> -->
+<link rel="SHORTCUT ICON" href="https://www.mssqltips.com/favicon.ico">
+
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL</title>
+<meta name="description" content="As SQL Server DBAs we may need to generate a script for the creation of all Primary Keys, Unique and Foreign Key constraints. We know with the SQL Server native tools that there is not a way to meet this need all at the same time. In this tip we look at t">
+<link rel="canonical" href="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/">
+
+
+
+<link href="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/foundation2.css" rel="stylesheet">
+<link href="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/app.css" rel="stylesheet">
+
+
+
+<meta property="og:url" content="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL">
+<meta property="og:description" content="As SQL Server DBAs we may need to generate a script for the creation of all Primary Keys, Unique and Foreign Key constraints. We know with the SQL Server native tools that there is not a way to meet this need all at the same time. In this tip we look at t">
+<meta property="og:image" content="https://www.mssqltips.com/images_newsletter/3443_NewsletterImage.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@mssqltips">
+<meta name="twitter:creator" content="@mssqltips">
+<meta name="twitter:title" content="Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL">
+<meta name="twitter:description" content="As SQL Server DBAs we may need to generate a script for the creation of all Primary Keys, Unique and Foreign Key constraints. We know with the SQL Server native tools that there is not a way to meet this need all at the same time. In this tip we look at t">
+<meta name="twitter:image" content="https://www.mssqltips.com/images_newsletter/3443_NewsletterImage.png">
+
+
+
+<script async="" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/async-ads.js.download"></script><script src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/cb=gapi.loaded_1" async=""></script><script src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/cb=gapi(1).loaded_0" async=""></script><script src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/osd.js.download"></script><script type="text/javascript" async="" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/ga.js.download"></script><script type="text/javascript" async="" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/atrk.js.download"></script><script src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/pubads_impl_rendering_180.js.download"></script><script src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/ads"></script><script type="text/javascript" async="" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/recaptcha__en.js.download"></script><script type="text/javascript" async="" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/plusone.js.download" gapi_processed="true"></script><script id="facebook-jssdk" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/sdk.js.download"></script><script type="text/javascript" async="" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/cse.js.download"></script><script async="async" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/gpt.js.download"></script>
+<script>
+  var googletag = googletag || {};
+  googletag.cmd = googletag.cmd || [];
+</script>
+
+
+<script type="text/javascript">
+var gptAdSlots = [];
+googletag.cmd.push(function() {
+
+var mapping = googletag.sizeMapping().
+
+addSize([100, 100], []).
+addSize([320, 400], []).
+addSize([320, 700], []).
+addSize([750, 200], [728, 90]).
+addSize([1050, 200], [728, 90]).build();
+
+ googletag.defineSlot('/53998264/160x600-Primary', [160, 600], 'div-gpt-ad-1388505177750-0').addService(googletag.pubads());  googletag.defineSlot('/53998264/160x600-Secondary', [160, 600], 'div-gpt-ad-1388505177750-1').addService(googletag.pubads());  googletag.defineSlot('/53998264/300x250-Primary', [300, 250], 'div-gpt-ad-1388505177750-2').addService(googletag.pubads());  var slot2 = googletag.defineSlot('/53998264/300x250-Secondary', [300, 250], 'div-gpt-ad-1388505177750-3').addService(googletag.pubads());  
+	gptAdSlots[0] = googletag.defineSlot('/53998264/728x90-Primary', [728, 90], 'ad-slot-leader').
+	defineSizeMapping(mapping).
+	addService(googletag.pubads());
+
+	googletag.defineSlot('/53998264/170x90-pos1', [170, 90], 'div-gpt-ad-1481919244109-0').addService(googletag.pubads());
+	googletag.defineSlot('/53998264/170x90-pos2', [170, 90], 'div-gpt-ad-1481919244109-1').addService(googletag.pubads());
+	googletag.defineSlot('/53998264/170x90-pos3', [170, 90], 'div-gpt-ad-1481919244109-2').addService(googletag.pubads());
+	googletag.defineSlot('/53998264/170x90-pos4', [170, 90], 'div-gpt-ad-1481919244109-3').addService(googletag.pubads());
+
+
+
+googletag.pubads().enableSingleRequest();
+googletag.pubads().collapseEmptyDivs();
+googletag.enableServices();
+
+
+
+});
+</script>
+
+
+<link rel="preload" href="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/integrator.js.download" as="script"><script type="text/javascript" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/integrator.js.download"></script><script src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/pubads_impl_180.js.download" async=""></script><script src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/secureAnonymousFramework"></script><script src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/jsapi" type="text/javascript"></script><script type="text/javascript" charset="utf-8" async="" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/button.5f64a1a5864e1229f84c8defd65341b4.js.download"></script><style type="text/css">.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_reposition{overflow:hidden;position:relative}.fb_invisible{display:none}.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}.fb_link img{border:none}@keyframes fb_transform{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}.fb_animate{animation:fb_transform .3s forwards}
+.fb_dialog{background:rgba(82, 82, 82, .7);position:absolute;top:-10000px;z-index:10001}.fb_reset .fb_dialog_legacy{overflow:visible}.fb_dialog_advanced{padding:10px;-moz-border-radius:8px;-webkit-border-radius:8px;border-radius:8px}.fb_dialog_content{background:#fff;color:#333}.fb_dialog_close_icon{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 0 transparent;cursor:pointer;display:block;height:15px;position:absolute;right:18px;top:17px;width:15px}.fb_dialog_mobile .fb_dialog_close_icon{top:5px;left:5px;right:auto}.fb_dialog_padding{background-color:transparent;position:absolute;width:1px;z-index:-1}.fb_dialog_close_icon:hover{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -15px transparent}.fb_dialog_close_icon:active{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -30px transparent}.fb_dialog_loader{background-color:#f6f7f9;border:1px solid #606060;font-size:24px;padding:20px}.fb_dialog_top_left,.fb_dialog_top_right,.fb_dialog_bottom_left,.fb_dialog_bottom_right{height:10px;width:10px;overflow:hidden;position:absolute}.fb_dialog_top_left{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ye/r/8YeTNIlTZjm.png) no-repeat 0 0;left:-10px;top:-10px}.fb_dialog_top_right{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ye/r/8YeTNIlTZjm.png) no-repeat 0 -10px;right:-10px;top:-10px}.fb_dialog_bottom_left{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ye/r/8YeTNIlTZjm.png) no-repeat 0 -20px;bottom:-10px;left:-10px}.fb_dialog_bottom_right{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ye/r/8YeTNIlTZjm.png) no-repeat 0 -30px;right:-10px;bottom:-10px}.fb_dialog_vert_left,.fb_dialog_vert_right,.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{position:absolute;background:#525252;filter:alpha(opacity=70);opacity:.7}.fb_dialog_vert_left,.fb_dialog_vert_right{width:10px;height:100%}.fb_dialog_vert_left{margin-left:-10px}.fb_dialog_vert_right{right:0;margin-right:-10px}.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{width:100%;height:10px}.fb_dialog_horiz_top{margin-top:-10px}.fb_dialog_horiz_bottom{bottom:0;margin-bottom:-10px}.fb_dialog_iframe{line-height:0}.fb_dialog_content .dialog_title{background:#6d84b4;border:1px solid #365899;color:#fff;font-size:14px;font-weight:bold;margin:0}.fb_dialog_content .dialog_title>span{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yd/r/Cou7n-nqK52.gif) no-repeat 5px 50%;float:left;padding:5px 0 7px 26px}body.fb_hidden{-webkit-transform:none;height:100%;margin:0;overflow:visible;position:absolute;top:-10000px;left:0;width:100%}.fb_dialog.fb_dialog_mobile.loading{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ya/r/3rhSv5V8j3o.gif) white no-repeat 50% 50%;min-height:100%;min-width:100%;overflow:hidden;position:absolute;top:0;z-index:10001}.fb_dialog.fb_dialog_mobile.loading.centered{width:auto;height:auto;min-height:initial;min-width:initial;background:none}.fb_dialog.fb_dialog_mobile.loading.centered #fb_dialog_loader_spinner{width:100%}.fb_dialog.fb_dialog_mobile.loading.centered .fb_dialog_content{background:none}.loading.centered #fb_dialog_loader_close{color:#fff;display:block;padding-top:20px;clear:both;font-size:18px}#fb-root #fb_dialog_ipad_overlay{background:rgba(0, 0, 0, .45);position:absolute;bottom:0;left:0;right:0;top:0;width:100%;min-height:100%;z-index:10000}#fb-root #fb_dialog_ipad_overlay.hidden{display:none}.fb_dialog.fb_dialog_mobile.loading iframe{visibility:hidden}.fb_dialog_content .dialog_header{-webkit-box-shadow:white 0 1px 1px -1px inset;background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#738ABA), to(#2C4987));border-bottom:1px solid;border-color:#1d4088;color:#fff;font:14px Helvetica, sans-serif;font-weight:bold;text-overflow:ellipsis;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0;vertical-align:middle;white-space:nowrap}.fb_dialog_content .dialog_header table{-webkit-font-smoothing:subpixel-antialiased;height:43px;width:100%}.fb_dialog_content .dialog_header td.header_left{font-size:12px;padding-left:5px;vertical-align:middle;width:60px}.fb_dialog_content .dialog_header td.header_right{font-size:12px;padding-right:5px;vertical-align:middle;width:60px}.fb_dialog_content .touchable_button{background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#4966A6), color-stop(.5, #355492), to(#2A4887));border:1px solid #29487d;-webkit-background-clip:padding-box;-webkit-border-radius:3px;-webkit-box-shadow:rgba(0, 0, 0, .117188) 0 1px 1px inset, rgba(255, 255, 255, .167969) 0 1px 0;display:inline-block;margin-top:3px;max-width:85px;line-height:18px;padding:4px 12px;position:relative}.fb_dialog_content .dialog_header .touchable_button input{border:none;background:none;color:#fff;font:12px Helvetica, sans-serif;font-weight:bold;margin:2px -12px;padding:2px 6px 3px 6px;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog_content .dialog_header .header_center{color:#fff;font-size:16px;font-weight:bold;line-height:18px;text-align:center;vertical-align:middle}.fb_dialog_content .dialog_content{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/y9/r/jKEcVPZFk-2.gif) no-repeat 50% 50%;border:1px solid #555;border-bottom:0;border-top:0;height:150px}.fb_dialog_content .dialog_footer{background:#f6f7f9;border:1px solid #555;border-top-color:#ccc;height:40px}#fb_dialog_loader_close{float:left}.fb_dialog.fb_dialog_mobile .fb_dialog_close_button{text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog.fb_dialog_mobile .fb_dialog_close_icon{visibility:hidden}#fb_dialog_loader_spinner{animation:rotateSpinner 1.2s linear infinite;background-color:transparent;background-image:url(https://static.xx.fbcdn.net/rsrc.php/v3/yD/r/t-wz8gw1xG1.png);background-repeat:no-repeat;background-position:50% 50%;height:24px;width:24px}@keyframes rotateSpinner{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.fb_iframe_widget{display:inline-block;position:relative}.fb_iframe_widget span{display:inline-block;position:relative;text-align:justify}.fb_iframe_widget iframe{position:absolute}.fb_iframe_widget_fluid_desktop,.fb_iframe_widget_fluid_desktop span,.fb_iframe_widget_fluid_desktop iframe{max-width:100%}.fb_iframe_widget_fluid_desktop iframe{min-width:220px;position:relative}.fb_iframe_widget_lift{z-index:1}.fb_hide_iframes iframe{position:relative;left:-10000px}.fb_iframe_widget_loader{position:relative;display:inline-block}.fb_iframe_widget_fluid{display:inline}.fb_iframe_widget_fluid span{width:100%}.fb_iframe_widget_loader iframe{min-height:32px;z-index:2;zoom:1}.fb_iframe_widget_loader .FB_Loader{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/y9/r/jKEcVPZFk-2.gif) no-repeat;height:32px;width:32px;margin-left:-16px;position:absolute;left:50%;z-index:4}
+.fb_customer_chat_bounce_in{animation-duration:250ms;animation-name:fb_bounce_in}.fb_customer_chat_bounce_out{animation-duration:250ms;animation-name:fb_fade_out}.fb_invisible_flow{display:inherit;height:0;overflow-x:hidden;width:0}.fb_mobile_overlay_active{height:100%;overflow:hidden;position:fixed;width:100%}@keyframes fb_fade_out{from{opacity:1}to{opacity:0}}@keyframes fb_bounce_in{0%{opacity:0;transform:scale(.8, .8);transform-origin:100% 100%}10%{opacity:.1}20%{opacity:.2}30%{opacity:.3}40%{opacity:.4}50%{opacity:.5}60%{opacity:.6}70%{opacity:.7}80%{opacity:.8;transform:scale(1.03, 1.03)}90{opacity:.9}100%{opacity:1;transform:scale(1, 1)}}</style><style type="text/css">* html #li_ui_li_gen_1519026757598_0 a#li_ui_li_gen_1519026757598_0-link{height:1% !important;}#li_ui_li_gen_1519026757598_0{position:relative !important;overflow:visible !important;display:block !important;}#li_ui_li_gen_1519026757598_0 span{-webkit-box-sizing:content-box !important;-moz-box-sizing:content-box !important;box-sizing:content-box !important;}#li_ui_li_gen_1519026757598_0 a#li_ui_li_gen_1519026757598_0-link{border:0 !important;height:20px !important;text-decoration:none !important;padding:0 !important;margin:0 !important;display:inline-block !important;}#li_ui_li_gen_1519026757598_0 a#li_ui_li_gen_1519026757598_0-link:link, #li_ui_li_gen_1519026757598_0 a#li_ui_li_gen_1519026757598_0-link:visited, #li_ui_li_gen_1519026757598_0 a#li_ui_li_gen_1519026757598_0-link:hover, #li_ui_li_gen_1519026757598_0 a#li_ui_li_gen_1519026757598_0-link:active{border:0 !important;text-decoration:none !important;}#li_ui_li_gen_1519026757598_0 a#li_ui_li_gen_1519026757598_0-link:after{content:"." !important;display:block !important;clear:both !important;visibility:hidden !important;line-height:0 !important;height:0 !important;}#li_ui_li_gen_1519026757598_0 #li_ui_li_gen_1519026757598_0-logo{background-image:url(https://static.licdn.com/scds/common/u/images/apps/connect/sprites/sprite_connect_v14.png) !important;background-position:0px -593px !important;background-repeat:no-repeat !important;background-color:#0077b5 !important;background-size:initial !important;cursor:pointer !important;border:0 !important;border-right:1px solid #066094 !important;text-indent:-9999em !important;overflow:hidden !important;padding:0 !important;margin:0 !important;position:absolute !important;left:0px !important;top:0px !important;display:block !important;width:20px !important;height:20px !important;float:right !important;border-radius:2px !important;-webkit-border-radius:2px !important;border-top-right-radius:2px !important;border-bottom-right-radius:2px !important;-webkit-border-top-right-radius:2px !important;-webkit-border-bottom-right-radius:2px !important;}#li_ui_li_gen_1519026757598_0 #li_ui_li_gen_1519026757598_0-title{color:#fff !important;cursor:pointer !important;display:block !important;white-space:nowrap !important;float:left !important;margin-left:1px !important;vertical-align:top !important;overflow:hidden !important;text-align:center !important;height:18px !important;padding:0 4px 0 23px !important;border:1px solid #000 !important;border-top-color:#0077b5 !important;border-right-color:#0077b5 !important;border-bottom-color:#0077b5 !important;border-left-color:#0077b5 !important;text-shadow:0 -1px #005887 !important;line-height:20px !important;border-radius:2px !important;-webkit-border-radius:2px !important;border-top-right-radius:2px !important;border-bottom-right-radius:2px !important;-webkit-border-top-right-radius:2px !important;-webkit-border-bottom-right-radius:2px !important;background-color:#0077b5 !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#0077b5), color-stop(100%,#0077b5)) !important; background-image: -webkit-linear-gradient(top, #0077b5 0%, #0077b5 100%) !important;}#li_ui_li_gen_1519026757598_0.hovered #li_ui_li_gen_1519026757598_0-title{border:1px solid #000 !important;border-top-color:#0369a0 !important;border-right-color:#0369a0 !important;border-bottom-color:#0369a0 !important;border-left-color:#0369a0 !important;background-color:#0369a0 !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#0369a0), color-stop(100%,#0369a0)) !important; background-image: -webkit-linear-gradient(top, #0369a0 0%, #0369a0 100%) !important;}#li_ui_li_gen_1519026757598_0.clicked #li_ui_li_gen_1519026757598_0-title, #li_ui_li_gen_1519026757598_0.down #li_ui_li_gen_1519026757598_0-title{color:#fff !important;border:1px solid #000 !important;border-top-color:#066094 !important;border-right-color:#066094 !important;border-bottom-color:#066094 !important;border-left-color:#066094 !important;background-color:#066094 !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#066094), color-stop(100%,#066094)) !important; background-image: -webkit-linear-gradient(top, #066094 0%, #066094 100%) !important;}.IN-shadowed #li_ui_li_gen_1519026757598_0 #li_ui_li_gen_1519026757598_0-title{}.IN-shadowed #li_ui_li_gen_1519026757598_0.hovered #li_ui_li_gen_1519026757598_0-title{}.IN-shadowed #li_ui_li_gen_1519026757598_0.clicked #li_ui_li_gen_1519026757598_0-title, .IN-shadowed #li_ui_li_gen_1519026757598_0.down #li_ui_li_gen_1519026757598_0-title{}#li_ui_li_gen_1519026757598_0 #li_ui_li_gen_1519026757598_0-title-text, #li_ui_li_gen_1519026757598_0 #li_ui_li_gen_1519026757598_0-title-text *{color:#fff !important;font-size:11px !important;font-family:Arial, sans-serif !important;font-weight:bold !important;font-style:normal !important;-webkit-font-smoothing:antialiased !important;display:inline-block !important;background:transparent none !important;vertical-align:top !important;height:18px !important;line-height:20px !important;float:none !important;}#li_ui_li_gen_1519026757598_0 #li_ui_li_gen_1519026757598_0-title-text strong{font-weight:bold !important;}#li_ui_li_gen_1519026757598_0 #li_ui_li_gen_1519026757598_0-title-text em{font-style:italic !important;}#li_ui_li_gen_1519026757598_0.hovered #li_ui_li_gen_1519026757598_0-title-text, #li_ui_li_gen_1519026757598_0.hovered #li_ui_li_gen_1519026757598_0-title-text *{color:#fff !important;}#li_ui_li_gen_1519026757598_0.clicked #li_ui_li_gen_1519026757598_0-title-text, #li_ui_li_gen_1519026757598_0.down #li_ui_li_gen_1519026757598_0-title-text, #li_ui_li_gen_1519026757598_0.clicked #li_ui_li_gen_1519026757598_0-title-text *, #li_ui_li_gen_1519026757598_0.down #li_ui_li_gen_1519026757598_0-title-text *{color:#fff !important;}#li_ui_li_gen_1519026757598_0 #li_ui_li_gen_1519026757598_0-title #li_ui_li_gen_1519026757598_0-mark{display:inline-block !important;width:0px !important;overflow:hidden !important;}.success #li_ui_li_gen_1519026757598_0 #li_ui_li_gen_1519026757598_0-title{color:#fff !important;border-top-color:#0077b5 !important;border-right-color:#0077b5 !important;border-bottom-color:#0077b5 !important;border-left-color:#0077b5 !important;background-color:#0077b5 !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#0077b5), color-stop(100%,#0077b5)) !important; background-image: -webkit-linear-gradient(top, #0077b5 0%, #0077b5 100%) !important;}.success #li_ui_li_gen_1519026757598_0 #li_ui_li_gen_1519026757598_0-title-text, .success #li_ui_li_gen_1519026757598_0 #li_ui_li_gen_1519026757598_0-title-text *{color:#fff !important;}.IN-shadowed .success #li_ui_li_gen_1519026757598_0 #li_ui_li_gen_1519026757598_0-title{}.success #li_ui_li_gen_1519026757598_0.hovered #li_ui_li_gen_1519026757598_0-title{color:#fff !important;border-top-color:#0369a0 !important;border-right-color:#0369a0 !important;border-bottom-color:#0369a0 !important;border-left-color:#0369a0 !important;background-color:#0369a0 !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#0369a0), color-stop(100%,#0369a0)) !important; background-image: -webkit-linear-gradient(top, #0369a0 0%, #0369a0 100%) !important;}.success #li_ui_li_gen_1519026757598_0.hovered #li_ui_li_gen_1519026757598_0-title-text, .success #li_ui_li_gen_1519026757598_0.hovered #li_ui_li_gen_1519026757598_0-title-text *{color:#fff !important;}.success #li_ui_li_gen_1519026757598_0.clicked #li_ui_li_gen_1519026757598_0-title, .success #li_ui_li_gen_1519026757598_0.down #li_ui_li_gen_1519026757598_0-title{color:#fff !important;border-top-color:#066094 !important;border-right-color:#066094 !important;border-bottom-color:#066094 !important;border-left-color:#066094 !important;background-color:#066094 !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#066094), color-stop(100%,#066094)) !important; background-image: -webkit-linear-gradient(top, #066094 0%, #066094 100%) !important;}.success #li_ui_li_gen_1519026757598_0.clicked #li_ui_li_gen_1519026757598_0-title-text, .success #li_ui_li_gen_1519026757598_0.down #li_ui_li_gen_1519026757598_0-title-text, .success #li_ui_li_gen_1519026757598_0.clicked #li_ui_li_gen_1519026757598_0-title-text *, .success #li_ui_li_gen_1519026757598_0.down #li_ui_li_gen_1519026757598_0-title-text *{color:#fff !important;}.IN-shadowed .success #li_ui_li_gen_1519026757598_0.clicked #li_ui_li_gen_1519026757598_0-title, .IN-shadowed .success #li_ui_li_gen_1519026757598_0.down #li_ui_li_gen_1519026757598_0-title{}#li_ui_li_gen_1519026757612_1-container.IN-right {display:inline-block !important;float:left !important;overflow:visible !important;position:relative !important;height:20px !important;padding-left:2px !important;line-height:1px !important;cursor:pointer !important;}#li_ui_li_gen_1519026757612_1.IN-right {display:block !important;float:left !important;height:20px !important;margin-right:4px !important;padding-right:4px !important;background-image:url(https://static.licdn.com/scds/common/u/images/apps/connect/sprites/sprite_connect_v14.png) !important;background-color:transparent !important;background-repeat:no-repeat !important;background-position:right -447px !important;}#li_ui_li_gen_1519026757612_1-inner.IN-right {display:block !important;float:left !important;padding-left:8px !important;text-align:center !important;background-image:url(https://static.licdn.com/scds/common/u/images/apps/connect/sprites/sprite_connect_v14.png) !important;background-color:transparent !important;background-repeat:no-repeat !important;background-position:0px -426px !important;}#li_ui_li_gen_1519026757612_1-content.IN-right {display:inline !important;font-size:11px !important;color:#4e4e4e !important;font-weight:bold !important;font-family:Arial, sans-serif !important;line-height:20px !important;padding:0 5px 0 5px !important;}#li_ui_li_gen_1519026757612_1-container.IN-empty {display:none !important;}#li_ui_li_gen_1519026757612_1-container.IN-hidden #li_ui_li_gen_1519026757612_1 {display:none !important;}</style><link type="text/css" href="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/default+en.css" rel="stylesheet"><link type="text/css" href="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/default.css" rel="stylesheet"><script type="text/javascript" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/default+en.I.js.download"></script><link rel="stylesheet" href="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/skin.min.css"><style type="text/css">.gscb_a{display:inline-block;font:27px/13px arial,sans-serif}.gsst_a .gscb_a{color:#a1b9ed;cursor:pointer}.gsst_a:hover .gscb_a,.gsst_a:focus .gscb_a{color:#36c}.gsst_a{display:inline-block}.gsst_a{cursor:pointer;padding:0 4px}.gsst_a:hover{text-decoration:none!important}.gsst_b{font-size:16px;padding:0 2px;position:relative;user-select:none;-webkit-user-select:none;white-space:nowrap}.gsst_e{opacity:0.55;}.gsst_a:hover .gsst_e,.gsst_a:focus .gsst_e{opacity:0.72;}.gsst_a:active .gsst_e{opacity:1;}.gsst_f{background:white;text-align:left}.gsst_g{background-color:white;border:1px solid #ccc;border-top-color:#d9d9d9;box-shadow:0 2px 4px rgba(0,0,0,0.2);-webkit-box-shadow:0 2px 4px rgba(0,0,0,0.2);margin:-1px -3px;padding:0 6px}.gsst_h{background-color:white;height:1px;margin-bottom:-1px;position:relative;top:-1px}.gsib_a{width:100%;padding:4px 6px 0}.gsib_a,.gsib_b{vertical-align:top}.gssb_c{border:0;position:absolute;z-index:989}.gssb_e{border:1px solid #ccc;border-top-color:#d9d9d9;box-shadow:0 2px 4px rgba(0,0,0,0.2);-webkit-box-shadow:0 2px 4px rgba(0,0,0,0.2);cursor:default}.gssb_f{visibility:hidden;white-space:nowrap}.gssb_k{border:0;display:block;position:absolute;top:0;z-index:988}.gsdd_a{border:none!important}.gsq_a{padding:0}.gscsep_a{display:none}.gssb_a{padding:0 7px}.gssb_a,.gssb_a td{white-space:nowrap;overflow:hidden;line-height:22px}#gssb_b{font-size:11px;color:#36c;text-decoration:none}#gssb_b:hover{font-size:11px;color:#36c;text-decoration:underline}.gssb_g{text-align:center;padding:8px 0 7px;position:relative}.gssb_h{font-size:15px;height:28px;margin:0.2em;-webkit-appearance:button}.gssb_i{background:#eee}.gss_ifl{visibility:hidden;padding-left:5px}.gssb_i .gss_ifl{visibility:visible}a.gssb_j{font-size:13px;color:#36c;text-decoration:none;line-height:100%}a.gssb_j:hover{text-decoration:underline}.gssb_l{height:1px;background-color:#e5e5e5}.gssb_m{color:#000;background:#fff}.gsfe_a{border:1px solid #b9b9b9;border-top-color:#a0a0a0;box-shadow:inset 0px 1px 2px rgba(0,0,0,0.1);-moz-box-shadow:inset 0px 1px 2px rgba(0,0,0,0.1);-webkit-box-shadow:inset 0px 1px 2px rgba(0,0,0,0.1);}.gsfe_b{border:1px solid #4d90fe;outline:none;box-shadow:inset 0px 1px 2px rgba(0,0,0,0.3);-moz-box-shadow:inset 0px 1px 2px rgba(0,0,0,0.3);-webkit-box-shadow:inset 0px 1px 2px rgba(0,0,0,0.3);}.gssb_a{padding:0 9px}.gsib_a{padding-right:8px;padding-left:8px}.gsst_a{padding-top:5.5px}.gssb_e{border:0}.gssb_l{margin:5px 0}input.gsc-input::-webkit-input-placeholder{font-size:14px}input.gsc-input:-moz-placeholder{font-size:14px}input.gsc-input::-moz-placeholder{font-size:14px}input.gsc-input:-ms-input-placeholder{font-size:14px}input.gsc-input:focus::-webkit-input-placeholder{color:transparent}input.gsc-input:focus:-moz-placeholder{color:transparent}input.gsc-input:focus::-moz-placeholder{color:transparent}input.gsc-input:focus:-ms-input-placeholder{color:transparent}.gssb_c .gsc-completion-container{position:static}.gssb_c{z-index:5000}.gsc-completion-container table{background:transparent;font-size:inherit;font-family:inherit}.gssb_c > tbody > tr,.gssb_c > tbody > tr > td,.gssb_d,.gssb_d > tbody > tr,.gssb_d > tbody > tr > td,.gssb_e,.gssb_e > tbody > tr,.gssb_e > tbody > tr > td{padding:0;margin:0;border:0}.gssb_a table,.gssb_a table tr,.gssb_a table tr td{padding:0;margin:0;border:0}</style></head>
+
+
+<body onload="PR.prettyPrint()" data-gr-c-s-loaded="true">
+
+<a name="top"></a>
+
+
+
+	<div class="row">
+		<div class="large-12 columns text-center">
+		<br>
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;990x30&#39;, &#39;Click&#39;, &#39;Top&#39;]);" target="_blank" href="https://www.mssqltips.com/ss.asp?id=3612&amp;link=https://www.mssqltips.com/mssqltips-giveaway-vslive-boston/?ref=ss20180219"><img src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/mssqltips_990x30_vslive_boston.png" border="0" height="30" width="990" alt="Learn more about SQL Server tools"></a>
+		<br><br>
+		</div>
+	</div>
+
+
+<div class="row">
+	<div class="large-2 columns text-center">
+		<a href="https://www.mssqltips.com/"><img alt="mssqltips logo" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/mslogo_113x60.png"></a>
+	</div>
+	
+	<div class="large-8 hide-for-print columns">
+		<div style="padding:10px; background-color:#DADADA">
+		<div style="padding: 5px; background-color:#FFFFFF">
+			<script>
+			  (function() {
+			    var cx = '004111219998430415686:pjndvj5e2n4';
+			    var gcse = document.createElement('script');
+			    gcse.type = 'text/javascript';
+			    gcse.async = true;
+			    gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+			    var s = document.getElementsByTagName('script')[0];
+			    s.parentNode.insertBefore(gcse, s);
+			  })();
+			</script>
+			<div id="___gcse_0"><div class="gsc-control-searchbox-only gsc-control-searchbox-only-en" dir="ltr"><form class="gsc-search-box gsc-search-box-tools" accept-charset="utf-8"><table cellspacing="0" cellpadding="0" class="gsc-search-box"><tbody><tr><td class="gsc-input"><div class="gsc-input-box " id="gsc-iw-id1"><table cellspacing="0" cellpadding="0" id="gs_id50" class="gstl_50 " style="width: 100%; padding: 0px;"><tbody><tr><td id="gs_tti50" class="gsib_a"><input autocomplete="off" type="text" size="10" class="gsc-input" name="search" title="search" id="gsc-i-id1" dir="ltr" spellcheck="false" placeholder="Custom Search" style="width: 100%; padding: 0px; border: none; margin: 0px; height: auto; outline: none; background: url(&quot;https://www.google.com/cse/static/images/1x/googlelogo_lightgrey_46x16dp.png&quot;) left center no-repeat rgb(255, 255, 255); text-indent: 48px;"></td><td class="gsib_b"><div class="gsst_b" id="gs_st50" dir="ltr"><a class="gsst_a" href="javascript:void(0)" style="display: none;"><span class="gscb_a" id="gs_cb50">×</span></a></div></td></tr></tbody></table></div></td><td class="gsc-search-button"><input type="image" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/search_box_icon.png" class="gsc-search-button gsc-search-button-v2" title="search"></td><td class="gsc-clear-button"><div class="gsc-clear-button" title="clear results">&nbsp;</div></td></tr></tbody></table><table cellspacing="0" cellpadding="0" class="gsc-branding"><tbody><tr><td class="gsc-branding-user-defined"></td><td class="gsc-branding-text"><div class="gsc-branding-text">powered by</div></td><td class="gsc-branding-img"><img src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/googlelogo_grey_46x15dp.png" class="gsc-branding-img" srcset="https://www.google.com/cse/static/images/2x/googlelogo_grey_46x15dp.png 2x"></td></tr></tbody></table></form></div></div>
+		</div>
+		</div>
+	</div>	
+	
+	<div class="large-2 columns hide-for-small hide-for-print text-center">
+	</div>
+</div>
+<div class="row">
+	<div class="large-12 columns text-center">
+		&nbsp;
+	</div>
+</div>
+<div class="row" style="background-color:#3B6D93;">
+	<div class="large-12 columns text-center hide-for-medium hide-for-small hide-for-print">
+		<h3 style="text-align:center; color:white; padding:5px 0 0 0;">
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;Tutorials_l&#39;]);" href="https://www.mssqltips.com/sql-server-tutorials/" style="text-decoration:none;color:white">Tutorials</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;DBA_l&#39;]);" href="https://www.mssqltips.com/sql-server-dba-resources/" style="text-decoration:none;color:white">DBA</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;Dev_l&#39;]);" href="https://www.mssqltips.com/sql-server-developer-resources/" style="text-decoration:none;color:white">Dev</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;BI_l&#39;]);" href="https://www.mssqltips.com/sql-server-business-intelligence-resources/" style="text-decoration:none;color:white">BI</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;Career_l&#39;]);" href="https://www.mssqltips.com/sql-server-professional-development-resources/" style="text-decoration:none;color:white">Career</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;Categories_l&#39;]);" href="https://www.mssqltips.com/sql-server-categories/" style="text-decoration:none;color:white">Categories</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;Webcasts_l&#39;]);" href="https://www.mssqltips.com/sql-server-webcasts/" style="text-decoration:none;color:white">Webcasts</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;Whitepapers_l&#39;]);" href="https://www.mssqltips.com/sql-server-whitepapers/" style="text-decoration:none;color:white">Whitepapers</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;TodaysTip_l&#39;]);" href="https://www.mssqltips.com/todays-sql-server-tip/" style="text-decoration:none;color:white">Today's&nbsp;Tip</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;Join_l&#39;]);" href="https://www.mssqltips.com/get-free-sql-server-tips/?ref=JoinHeaderMenu" style="text-decoration:none;color:white">Join</a>
+		</h3>
+	</div>
+</div>
+<div class="row" style="background-color:#3B6D93;">
+	<div class="large-12 columns text-center hide-for-large hide-for-small hide-for-print">
+		<h3 style="text-align:center; color:white; padding:5px 0 0 0;">
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;Tutorials_m&#39;]);" href="https://www.mssqltips.com/sql-server-tutorials/" style="text-decoration:none;color:white">Tutorials</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;DBA_m&#39;]);" href="https://www.mssqltips.com/sql-server-dba-resources/" style="text-decoration:none;color:white">DBA</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;Dev_m&#39;]);" href="https://www.mssqltips.com/sql-server-developer-resources/" style="text-decoration:none;color:white">Dev</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;BI_m&#39;]);" href="https://www.mssqltips.com/sql-server-business-intelligence-resources/" style="text-decoration:none;color:white">BI</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;Categories_m&#39;]);" href="https://www.mssqltips.com/sql-server-categories/" style="text-decoration:none;color:white">Categories</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;Webcasts_m&#39;]);" href="https://www.mssqltips.com/sql-server-webcasts/" style="text-decoration:none;color:white">Webcasts</a>
+		</h3>
+	</div>
+</div>
+<div class="row" style="background-color:#3B6D93;">
+	<div class="large-12 columns text-center hide-for-medium hide-for-large hide-for-print">
+		<h3 style="text-align:center; color:white; padding:5px 0 0 0;">
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;DBA_s&#39;]);" href="https://www.mssqltips.com/sql-server-dba-resources/" style="text-decoration:none;color:white">DBA</a>&nbsp;&nbsp;&nbsp;
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;Dev_s&#39;]);" href="https://www.mssqltips.com/sql-server-developer-resources/" style="text-decoration:none;color:white">Dev</a>&nbsp;&nbsp;&nbsp;
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;BI_s&#39;]);" href="https://www.mssqltips.com/sql-server-business-intelligence-resources/" style="text-decoration:none;color:white">BI</a>&nbsp;&nbsp;&nbsp;
+		<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Menu_20160204&#39;, &#39;Click&#39;, &#39;Categories_s&#39;]);" href="https://www.mssqltips.com/sql-server-categories/" style="text-decoration:none;color:white">Categories</a>
+		</h3>
+	</div>
+</div>
+<div class="row">
+	&nbsp;
+</div>
+
+
+
+
+
+<div class="row">
+
+	 <div class="large-9 columns" role="content">  <h1>Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL</h1> 
+			<div align="center" class="hide-for-print">
+				<br>
+				<div id="ad-slot-leader" style="height:150px;" data-google-query-id="CJfb89G_sdkCFcS_dwodX5cHwg">
+				   <script>
+					 googletag.cmd.push(function() {googletag.display('ad-slot-leader'); });
+				   </script>
+				<div id="google_ads_iframe_/53998264/728x90-Primary_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/53998264/728x90-Primary_0" title="3rd party ad content" name="google_ads_iframe_/53998264/728x90-Primary_0" width="728" height="90" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" style="border: 0px; vertical-align: bottom;" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/saved_resource.html"></iframe></div></div>
+			</div>
+		
+
+
+<div id="fb-root" class=" fb_reset"><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div></div></div><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div><iframe name="fb_xdm_frame_https" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" id="fb_xdm_frame_https" aria-hidden="true" title="Facebook Cross Domain Communication Frame" tabindex="-1" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/lY4eZXm_YWu.html" style="border: none;"></iframe></div></div></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+<article>
+		
+		<span class="hide-for-small"><h6>By: <a href="https://www.mssqltips.com/sqlserverauthor/131/percy-reyes/" rel="author" title="author profile for Percy Reyes"><span itemprop="author" itemscope="" itemtype="http://schema.org/Person"><span itemprop="name">Percy Reyes</span></span></a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/#comments" title="read and post comments">Read Comments (10)</a> &nbsp;&nbsp;|&nbsp;&nbsp; Related Tips: <a href="https://www.mssqltips.com/sql-server-developer-resources/">More</a> &gt; <a href="https://www.mssqltips.com/sql-server-tip-category/72/constraints/">Constraints</a></h6></span>
+		
+		<br>
+		<div align="center">
+		<div style="width: 100%; padding: 4px; background-color: #000000; text-align: center; line-height: 25px;">
+			<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Webcast&#39;, &#39;Click&#39;, &#39;All&#39;]);" href="https://www.mssqltips.com/sql-server-webcast-signup/?id=679&amp;src=tips" style="color: #FFFFFF; text-decoration: none; font-size: 20px;" target="_blank">SQL Server Development with Aqua Data Studio &gt;&gt;&gt; Free Democast (click to learn more)</a>
+		</div></div>
+		<br><br>	
+		
+		<h5>Problem</h5>
+<p>As SQL Server DBAs we may need to generate a script for the creation of all Primary Keys, Unique and Foreign Key constraints. 
+We know with the SQL Server native tools that there is not a way to meet this 
+need all at the same time.
+ In this tip we look at two simple scripts to generate the SQL Server Primary 
+Keys, Unique and Foreign Key constraints and also provide two scripts for dropping these constraints.</p> 
+<h5>Solution</h5>
+<p>
+Common SQL Server constraints are for Primary and Foreign Keys as well as Unique 
+constraints.&nbsp; They are very important for data integrity in SQL Server databases. 
+This is why we need to be able to take a backup of each type of constraint in an 
+efficient manner so that we can recreate them in case they are dropped by accident or 
+if you need to recreate the same constraints in another copy of the same database for testing, development or training purposes. The scripts 
+below have been written in SQL Server 2014 but they should also work on SQL Server 2005/2008/2008R/2012.
+</p>
+<h2>
+SQL Server Primary Key and Unique Constraint Creation Script</h2>
+  <p>
+The following script is for the creation of all Primary Keys and Unique Constraints in the 
+  SQL Server database:
+</p>
+<div class="codediv">
+<pre>--- SCRIPT TO GENERATE THE CREATION SCRIPT OF ALL PK AND UNIQUE CONSTRAINTS.
+declare @SchemaName varchar(100)<br>declare @TableName varchar(256)
+declare @IndexName varchar(256)
+declare @ColumnName varchar(100)
+declare @is_unique_constraint varchar(100)
+declare @IndexTypeDesc varchar(100)
+declare @FileGroupName varchar(100)
+declare @is_disabled varchar(100)
+declare @IndexOptions varchar(max)
+declare @IndexColumnId int
+declare @IsDescendingKey int 
+declare @IsIncludedColumn int
+declare @TSQLScripCreationIndex varchar(max)
+declare @TSQLScripDisableIndex varchar(max)
+declare @is_primary_key varchar(100)
+
+declare CursorIndex cursor for
+ select schema_name(t.schema_id) [schema_name], t.name, ix.name,
+ case when ix.is_unique_constraint = 1 then ' UNIQUE ' else '' END 
+    ,case when ix.is_primary_key = 1 then ' PRIMARY KEY ' else '' END 
+ , ix.type_desc,
+  case when ix.is_padded=1 then 'PAD_INDEX = ON, ' else 'PAD_INDEX = OFF, ' end
+ + case when ix.allow_page_locks=1 then 'ALLOW_PAGE_LOCKS = ON, ' else 'ALLOW_PAGE_LOCKS = OFF, ' end
+ + case when ix.allow_row_locks=1 then  'ALLOW_ROW_LOCKS = ON, ' else 'ALLOW_ROW_LOCKS = OFF, ' end
+ + case when INDEXPROPERTY(t.object_id, ix.name, 'IsStatistics') = 1 then 'STATISTICS_NORECOMPUTE = ON, ' else 'STATISTICS_NORECOMPUTE = OFF, ' end
+ + case when ix.ignore_dup_key=1 then 'IGNORE_DUP_KEY = ON, ' else 'IGNORE_DUP_KEY = OFF, ' end
+ + 'SORT_IN_TEMPDB = OFF, FILLFACTOR =' + CAST(ix.fill_factor AS VARCHAR(3)) AS IndexOptions
+ , FILEGROUP_NAME(ix.data_space_id) FileGroupName
+ from sys.tables t 
+ inner join sys.indexes ix on t.object_id=ix.object_id
+ where ix.type&gt;0 and  (ix.is_primary_key=1 or ix.is_unique_constraint=1) --and schema_name(tb.schema_id)= @SchemaName and tb.name=@TableName
+ and t.is_ms_shipped=0 and t.name&lt;&gt;'sysdiagrams'
+ order by schema_name(t.schema_id), t.name, ix.name
+open CursorIndex
+fetch next from CursorIndex into  @SchemaName, @TableName, @IndexName, @is_unique_constraint, @is_primary_key, @IndexTypeDesc, @IndexOptions, @FileGroupName
+while (@@fetch_status=0)
+begin
+ declare @IndexColumns varchar(max)
+ declare @IncludedColumns varchar(max)
+ set @IndexColumns=''
+ set @IncludedColumns=''
+ declare CursorIndexColumn cursor for 
+ select col.name, ixc.is_descending_key, ixc.is_included_column
+ from sys.tables tb 
+ inner join sys.indexes ix on tb.object_id=ix.object_id
+ inner join sys.index_columns ixc on ix.object_id=ixc.object_id and ix.index_id= ixc.index_id
+ inner join sys.columns col on ixc.object_id =col.object_id  and ixc.column_id=col.column_id
+ where ix.type&gt;0 and (ix.is_primary_key=1 or ix.is_unique_constraint=1)
+ and schema_name(tb.schema_id)=@SchemaName and tb.name=@TableName and ix.name=@IndexName
+ order by ixc.index_column_id
+ open CursorIndexColumn 
+ fetch next from CursorIndexColumn into  @ColumnName, @IsDescendingKey, @IsIncludedColumn
+ while (@@fetch_status=0)
+ begin
+  if @IsIncludedColumn=0 
+    set @IndexColumns=@IndexColumns + @ColumnName  + case when @IsDescendingKey=1  then ' DESC, ' else  ' ASC, ' end
+  else 
+   set @IncludedColumns=@IncludedColumns  + @ColumnName  +', ' 
+     
+  fetch next from CursorIndexColumn into @ColumnName, @IsDescendingKey, @IsIncludedColumn
+ end
+ close CursorIndexColumn
+ deallocate CursorIndexColumn
+ set @IndexColumns = substring(@IndexColumns, 1, len(@IndexColumns)-1)
+ set @IncludedColumns = case when len(@IncludedColumns) &gt;0 then substring(@IncludedColumns, 1, len(@IncludedColumns)-1) else '' end
+--  print @IndexColumns
+--  print @IncludedColumns
+
+set @TSQLScripCreationIndex =''
+set @TSQLScripDisableIndex =''
+set  @TSQLScripCreationIndex='ALTER TABLE '+  QUOTENAME(@SchemaName) +'.'+ QUOTENAME(@TableName)+ ' ADD CONSTRAINT ' +  QUOTENAME(@IndexName) + @is_unique_constraint + @is_primary_key + +@IndexTypeDesc +  '('+@IndexColumns+') '+ 
+ case when len(@IncludedColumns)&gt;0 then CHAR(13) +'INCLUDE (' + @IncludedColumns+ ')' else '' end + CHAR(13)+'WITH (' + @IndexOptions+ ') ON ' + QUOTENAME(@FileGroupName) + ';'  
+
+print @TSQLScripCreationIndex
+print @TSQLScripDisableIndex
+
+fetch next from CursorIndex into  @SchemaName, @TableName, @IndexName, @is_unique_constraint, @is_primary_key, @IndexTypeDesc, @IndexOptions, @FileGroupName
+
+end
+close CursorIndex
+deallocate CursorIndex
+</pre>
+</div>
+<h2>
+Script to Drop all SQL Server Primary Key and Unique Constraints
+</h2>
+  <p>
+The following script is to drop all Primary Keys and Unique Constraints in the 
+  SQL Server database:</p>
+<div class="codediv">
+<pre>--- SCRIPT TO GENERATE THE DROP SCRIPT OF ALL PK AND UNIQUE CONSTRAINTS.
+DECLARE @SchemaName VARCHAR(256)<br>DECLARE @TableName VARCHAR(256)
+DECLARE @IndexName VARCHAR(256)
+DECLARE @TSQLDropIndex VARCHAR(MAX)
+
+DECLARE CursorIndexes CURSOR FOR
+SELECT  schema_name(t.schema_id), t.name,  i.name 
+FROM sys.indexes i
+INNER JOIN sys.tables t ON t.object_id= i.object_id
+WHERE i.type&gt;0 and t.is_ms_shipped=0 and t.name&lt;&gt;'sysdiagrams'
+and (is_primary_key=1 or is_unique_constraint=1)
+
+OPEN CursorIndexes
+FETCH NEXT FROM CursorIndexes INTO @SchemaName,@TableName,@IndexName
+WHILE @@fetch_status = 0
+BEGIN
+  SET @TSQLDropIndex = 'ALTER TABLE '+QUOTENAME(@SchemaName)+ '.' + QUOTENAME(@TableName) + ' DROP CONSTRAINT ' +QUOTENAME(@IndexName)
+  PRINT @TSQLDropIndex
+  FETCH NEXT FROM CursorIndexes INTO @SchemaName,@TableName,@IndexName
+END
+
+CLOSE CursorIndexes
+DEALLOCATE CursorIndexes
+</pre>
+</div>
+<h2>
+SQL Server Foreign Key Constraint Creation Script</h2>
+  <p>
+The following script is for the creation of all Foreign Keys Constraints in the 
+  SQL Server database:
+</p>
+
+<div class="codediv">
+<pre>--- SCRIPT TO GENERATE THE CREATION SCRIPT OF ALL FOREIGN KEY CONSTRAINTS
+declare @ForeignKeyID int
+declare @ForeignKeyName varchar(4000)
+declare @ParentTableName varchar(4000)
+declare @ParentColumn varchar(4000)
+declare @ReferencedTable varchar(4000)
+declare @ReferencedColumn varchar(4000)
+declare @StrParentColumn varchar(max)
+declare @StrReferencedColumn varchar(max)
+declare @ParentTableSchema varchar(4000)
+declare @ReferencedTableSchema varchar(4000)
+declare @TSQLCreationFK varchar(max)
+--Written by Percy Reyes www.percyreyes.com
+declare CursorFK cursor for select object_id--, name, object_name( parent_object_id) 
+from sys.foreign_keys
+open CursorFK
+fetch next from CursorFK into @ForeignKeyID
+while (@@FETCH_STATUS=0)
+begin
+ set @StrParentColumn=''
+ set @StrReferencedColumn=''
+ declare CursorFKDetails cursor for
+  select  fk.name ForeignKeyName, schema_name(t1.schema_id) ParentTableSchema,
+  object_name(fkc.parent_object_id) ParentTable, c1.name ParentColumn,schema_name(t2.schema_id) ReferencedTableSchema,
+   object_name(fkc.referenced_object_id) ReferencedTable,c2.name ReferencedColumn
+  from --sys.tables t inner join 
+  sys.foreign_keys fk 
+  inner join sys.foreign_key_columns fkc on fk.object_id=fkc.constraint_object_id
+  inner join sys.columns c1 on c1.object_id=fkc.parent_object_id and c1.column_id=fkc.parent_column_id 
+  inner join sys.columns c2 on c2.object_id=fkc.referenced_object_id and c2.column_id=fkc.referenced_column_id 
+  inner join sys.tables t1 on t1.object_id=fkc.parent_object_id 
+  inner join sys.tables t2 on t2.object_id=fkc.referenced_object_id 
+  where fk.object_id=@ForeignKeyID
+ open CursorFKDetails
+ fetch next from CursorFKDetails into  @ForeignKeyName, @ParentTableSchema, @ParentTableName, @ParentColumn, @ReferencedTableSchema, @ReferencedTable, @ReferencedColumn
+ while (@@FETCH_STATUS=0)
+ begin    
+  set @StrParentColumn=@StrParentColumn + ', ' + quotename(@ParentColumn)
+  set @StrReferencedColumn=@StrReferencedColumn + ', ' + quotename(@ReferencedColumn)
+  
+     fetch next from CursorFKDetails into  @ForeignKeyName, @ParentTableSchema, @ParentTableName, @ParentColumn, @ReferencedTableSchema, @ReferencedTable, @ReferencedColumn
+ end
+ close CursorFKDetails
+ deallocate CursorFKDetails
+
+ set @StrParentColumn=substring(@StrParentColumn,2,len(@StrParentColumn)-1)
+ set @StrReferencedColumn=substring(@StrReferencedColumn,2,len(@StrReferencedColumn)-1)
+ set @TSQLCreationFK='ALTER TABLE '+quotename(@ParentTableSchema)+'.'+quotename(@ParentTableName)+' WITH CHECK ADD CONSTRAINT '+quotename(@ForeignKeyName)
+ + ' FOREIGN KEY('+ltrim(@StrParentColumn)+') '+ char(13) +'REFERENCES '+quotename(@ReferencedTableSchema)+'.'+quotename(@ReferencedTable)+' ('+ltrim(@StrReferencedColumn)+') ' + char(13)+'GO'
+ 
+ print @TSQLCreationFK
+
+fetch next from CursorFK into @ForeignKeyID 
+end
+close CursorFK
+deallocate CursorFK
+</pre>
+</div>
+<h2>
+Script to Drop all SQL Server Foreign Key Constraints
+</h2>
+  <p>
+The following script is to drop all Foreign Key Constraints in the 
+  SQL Server database:</p>
+<div class="codediv">
+<pre>--- SCRIPT TO GENERATE THE DROP SCRIPT OF ALL FOREIGN KEY CONSTRAINTS
+declare @ForeignKeyName varchar(4000)<br>declare @ParentTableName varchar(4000)
+declare @ParentTableSchema varchar(4000)
+
+declare @TSQLDropFK varchar(max)
+
+declare CursorFK cursor for select fk.name ForeignKeyName, schema_name(t.schema_id) ParentTableSchema, t.name ParentTableName
+from sys.foreign_keys fk  inner join sys.tables t on fk.parent_object_id=t.object_id
+open CursorFK
+fetch next from CursorFK into  @ForeignKeyName, @ParentTableSchema, @ParentTableName
+while (@@FETCH_STATUS=0)
+begin
+ set @TSQLDropFK ='ALTER TABLE '+quotename(@ParentTableSchema)+'.'+quotename(@ParentTableName)+' DROP CONSTRAINT '+quotename(@ForeignKeyName)+ char(13) + 'GO'
+ 
+ print @TSQLDropFK
+
+fetch next from CursorFK into  @ForeignKeyName, @ParentTableSchema, @ParentTableName
+end
+close CursorFK
+deallocate CursorFK
+</pre>
+</div>
+<p>
+&nbsp;</p>
+<h5>Next Steps</h5>
+<ul>
+ <li>Read these related tips:</li>
+ <ul> <li><a href="https://www.mssqltips.com/sqlservertip/1296/the-importance-of-sql-server-foreign-keys/" target="_blank">The Importance of SQL Server Foreign Keys</a></li>
+  <li>Check out all
+  <a href="https://www.mssqltips.com/sql-server-tip-category/72/constraints/">
+  Constraint </a>Related Tips</li> 
+</ul>
+</ul>
+  
+  
+  
+  
+
+		<br><br>
+		
+		Last Update: <span itemprop="datePublished" content="2015-01-06">2015-01-06</span>
+		<br><br><br>
+
+		<div class="row">
+			<div class="large-6 columns">
+				<div align="center" class="hide-for-print"><a href="https://www.mssqltips.com/get-free-sql-server-tips/?ref=yellow" onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;Join&#39;, &#39;Click&#39;, &#39;YellowButton&#39;]);"><img border="0" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/getfreesqltips_red_20160929.png" alt="signup button" width="300" height="150"></a></div>
+				<br>
+			</div>
+			<div class="large-6 columns">
+				<div align="center" class="hide-for-print"><a href="https://www.mssqltips.com/sql-server-tip-category/72/constraints/" onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;NextTip&#39;, &#39;Click&#39;, &#39;YellowArrow&#39;]);"><img border="0" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/nav_nexttip_clickhere_rev1.png" alt="next tip button" width="300" height="150"></a></div>
+				<br>
+			</div>
+		</div>
+		<br><br>
+
+		<h5>About the author</h5>
+		<div class="row">
+			<div class="large-6 columns">
+			<a href="https://www.mssqltips.com/sqlserverauthor/131/percy-reyes/"><img itemprop="image" style="float: left; padding: 0px 3px 0px 0px;" alt="MSSQLTips author Percy Reyes" height="90" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/PercyReyes.jpg" width="60"></a>
+
+			Percy Reyes is a SQL Server MVP and Sr. Database Administrator focused on SQL Server Internals with over 10+ years of extensive experience managing critical database servers. 
+
+			<br><br><b><a href="https://www.mssqltips.com/sqlserverauthor/131/percy-reyes/">View all my tips</a></b>
+			</div>
+
+			<div class="large-6 columns">
+			
+	<b>Related Resources</b><br>
+	<ul>
+<li><a href="https://www.mssqltips.com/sql-server-developer-resources/">More Database Developer Tips...</a></li>
+
+	</ul>
+
+			</div>
+		</div>
+		<br><br>
+
+<a name="comments"></a>
+		<div class="row hide-for-small hide-for-print">
+			<div class="large-2 columns">
+				<script data-cfasync="false" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/email-decode.min.js.download"></script><script src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/in.js.download" type="text/javascript"></script><span class="IN-widget" style="line-height: 1; vertical-align: baseline; display: inline-block; text-align: center;"><span style="padding: 0px !important; margin: 0px !important; text-indent: 0px !important; display: inline-block !important; vertical-align: baseline !important; font-size: 1px !important;"><span id="li_ui_li_gen_1519026757598_0"><a id="li_ui_li_gen_1519026757598_0-link" href="javascript:void(0);"><span id="li_ui_li_gen_1519026757598_0-logo">in</span><span id="li_ui_li_gen_1519026757598_0-title"><span id="li_ui_li_gen_1519026757598_0-mark"></span><span id="li_ui_li_gen_1519026757598_0-title-text">Share</span></span></a></span></span><span style="padding: 0px !important; margin: 0px !important; text-indent: 0px !important; display: inline-block !important; vertical-align: baseline !important; font-size: 1px !important;"><span id="li_ui_li_gen_1519026757612_1-container" class="IN-right IN-hidden"><span id="li_ui_li_gen_1519026757612_1" class="IN-right"><span id="li_ui_li_gen_1519026757612_1-inner" class="IN-right"><span id="li_ui_li_gen_1519026757612_1-content" class="IN-right">0</span></span></span></span></span></span><script type="IN/Share+init" data-counter="right"></script>
+			</div>
+			<div class="large-2 columns">
+				<div class="fb-like fb_iframe_widget" data-href="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/" data-layout="button_count" data-width="50" data-action="like" data-show-faces="false" fb-xfbml-state="rendered" fb-iframe-plugin-query="action=like&amp;app_id=&amp;container_width=131&amp;href=https%3A%2F%2Fwww.mssqltips.com%2Fsqlservertip%2F3443%2Fscript-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql%2F&amp;layout=button_count&amp;locale=en_US&amp;sdk=joey&amp;show_faces=false&amp;width=50"><span style="vertical-align: bottom; width: 61px; height: 20px;"><iframe name="f35c2db116597f" width="50px" height="1000px" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" title="fb:like Facebook Social Plugin" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/like.html" style="border: none; visibility: visible; width: 61px; height: 20px;" class=""></iframe></span></div>
+			</div>
+
+			<div class="large-2 columns">
+				<iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" class="twitter-share-button twitter-share-button-rendered twitter-tweet-button" title="Twitter Tweet Button" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/tweet_button.36c0c29c73929bf937f4c70adb1a29e4.en.html" style="position: static; visibility: visible; width: 60px; height: 20px;"></iframe><script async="" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/widgets.js.download" charset="utf-8"></script>
+			</div>
+			<div class="large-2 columns">
+				<!-- Place this tag where you want the +1 button to render -->
+				<div id="___plusone_0" style="text-indent: 0px; margin: 0px; padding: 0px; background: transparent; border-style: none; float: none; line-height: normal; font-size: 1px; vertical-align: baseline; display: inline-block; width: 32px; height: 20px;"><iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position: static; top: 0px; width: 32px; margin: 0px; border-style: none; left: 0px; visibility: visible; height: 20px;" tabindex="0" vspace="0" width="100%" id="I0_1519026760789" name="I0_1519026760789" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/fastbutton.html" data-gapiattached="true" title="G+"></iframe></div>
+				<!-- Place this render call where appropriate -->
+				<script type="text/javascript">
+				  (function() {
+				    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+				    po.src = 'https://apis.google.com/js/plusone.js';
+				    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+				  })();
+				</script>
+			</div>
+			<div class="large-4 columns">
+				<a href="https://www.mssqltips.com/contribute/">Become a paid author</a>
+			</div>
+		<hr>
+		</div>
+		<br><br>
+
+</article>
+
+
+
+
+		<div class="row">
+
+			
+
+		</div>
+
+		
+		<div class="hide-for-print">
+			
+			<a name="commentnew"></a>
+			<a name="comments2"></a>
+
+
+
+<script src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/api.js.download" async="" defer=""></script>
+
+<script language="Javascript">
+/**
+ * DHTML email validation script. Courtesy of SmartWebby.com (http://www.smartwebby.com/dhtml/)
+ */
+
+function echeck(str) {
+
+		var at="@"
+		var dot="."
+		var lat=str.indexOf(at)
+		var lstr=str.length
+		var ldot=str.indexOf(dot)
+		if (str.indexOf(at)==-1){
+		   alert("Invalid E-mail")
+		   return false
+		}
+
+		if (str.indexOf(at)==-1 || str.indexOf(at)==0 || str.indexOf(at)==lstr){
+		   alert("Invalid E-mail")
+		   return false
+		}
+
+		if (str.indexOf(dot)==-1 || str.indexOf(dot)==0 || str.indexOf(dot)==lstr){
+		    alert("Invalid E-mail")
+		    return false
+		}
+
+		 if (str.indexOf(at,(lat+1))!=-1){
+		    alert("Invalid E-mail")
+		    return false
+		 }
+
+		 if (str.substring(lat-1,lat)==dot || str.substring(lat+1,lat+2)==dot){
+		    alert("Invalid E-mail")
+		    return false
+		 }
+
+		 if (str.indexOf(dot,(lat+2))==-1){
+		    alert("Invalid E-mail")
+		    return false
+		 }
+		
+		 if (str.indexOf(" ")!=-1){
+		    alert("Invalid E-mail")
+		    return false
+		 }
+
+ 		 return true					
+	}
+
+function ValidateForm(){
+	var emailID=document.comment.email
+	var name=document.comment.name
+	var captchacode=document.comment.captchacode
+
+
+	if ((name.value==null)||(name.value=="")){
+		alert("Please Enter your Name")
+		name.focus()
+		return false
+	}	
+	if ((emailID.value==null)||(emailID.value=="")){
+		alert("Please Enter your Email")
+		emailID.focus()
+		return false
+	}
+	if (echeck(emailID.value)==false){
+		emailID.focus()
+		return false
+	}
+	if(grecaptcha && grecaptcha.getResponse().length <= 0)
+	{
+		alert('Please check the recaptcha !');
+		return false;
+	}		
+	return true
+ }
+</script>
+<!-- TinyMCE -->
+<script type="text/javascript" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/tinymce.min.js.download"></script>
+<script type="text/javascript">
+tinymce.init({
+    selector: "textarea",
+    menubar: false,
+    plugins: "preview",
+    toolbar: "undo redo | bold italic | bullist numlist outdent indent | link | preview"
+});
+</script>
+
+<!-- /TinyMCE -->
+<form name="comment" action="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/#comments2" method="post" onsubmit="return ValidateForm()">
+<input type="hidden" name="tipid" value="3443">
+<input type="hidden" name="CanonicalComment" value="">
+	<div>
+
+		<!-- Gets replaced with TinyMCE, remember HTML in a textarea should be encoded -->
+		<div style="background-color:#E2E2E2; padding:10px;">
+			<h5><span style="color:#000080">Post a comment or let the author know this tip helped.</span></h5>
+			<p>All comments are reviewed, so stay on subject or we may delete your comment.  Note: your email address is not published. Required fields are marked with an asterisk (*).</p>
+
+			*Name&nbsp;<input type="text" name="name" size="30" value="">&nbsp;&nbsp;
+			*Email&nbsp;<input type="text" name="email" size="30" value="">&nbsp;&nbsp;
+			Notify for updates&nbsp;<input type="checkbox" checked="checked" name="notifyflag" value="-1"><br><br>
+							
+			<div id="mceu_9" class="mce-tinymce mce-container mce-panel" hidefocus="1" tabindex="-1" role="application" style="visibility: hidden; border-width: 1px;"><div id="mceu_9-body" class="mce-container-body mce-stack-layout"><div id="mceu_10" class="mce-toolbar-grp mce-container mce-panel mce-stack-layout-item mce-first" hidefocus="1" tabindex="-1" role="group"><div id="mceu_10-body" class="mce-container-body mce-stack-layout"><div id="mceu_11" class="mce-container mce-toolbar mce-stack-layout-item mce-first mce-last" role="toolbar"><div id="mceu_11-body" class="mce-container-body mce-flow-layout"><div id="mceu_12" class="mce-container mce-flow-layout-item mce-first mce-btn-group" role="group"><div id="mceu_12-body"><div id="mceu_0" class="mce-widget mce-btn mce-first mce-disabled" tabindex="-1" aria-labelledby="mceu_0" role="button" aria-label="Undo" aria-disabled="true"><button role="presentation" type="button" tabindex="-1"><i class="mce-ico mce-i-undo"></i></button></div><div id="mceu_1" class="mce-widget mce-btn mce-last mce-disabled" tabindex="-1" aria-labelledby="mceu_1" role="button" aria-label="Redo" aria-disabled="true"><button role="presentation" type="button" tabindex="-1"><i class="mce-ico mce-i-redo"></i></button></div></div></div><div id="mceu_13" class="mce-container mce-flow-layout-item mce-btn-group" role="group"><div id="mceu_13-body"><div id="mceu_2" class="mce-widget mce-btn mce-first" tabindex="-1" aria-labelledby="mceu_2" role="button" aria-label="Bold"><button role="presentation" type="button" tabindex="-1"><i class="mce-ico mce-i-bold"></i></button></div><div id="mceu_3" class="mce-widget mce-btn mce-last" tabindex="-1" aria-labelledby="mceu_3" role="button" aria-label="Italic"><button role="presentation" type="button" tabindex="-1"><i class="mce-ico mce-i-italic"></i></button></div></div></div><div id="mceu_14" class="mce-container mce-flow-layout-item mce-btn-group" role="group"><div id="mceu_14-body"><div id="mceu_4" class="mce-widget mce-btn mce-first" tabindex="-1" aria-labelledby="mceu_4" role="button" aria-label="Bullet list"><button role="presentation" type="button" tabindex="-1"><i class="mce-ico mce-i-bullist"></i></button></div><div id="mceu_5" class="mce-widget mce-btn" tabindex="-1" aria-labelledby="mceu_5" role="button" aria-label="Numbered list"><button role="presentation" type="button" tabindex="-1"><i class="mce-ico mce-i-numlist"></i></button></div><div id="mceu_6" class="mce-widget mce-btn" tabindex="-1" aria-labelledby="mceu_6" role="button" aria-label="Decrease indent"><button role="presentation" type="button" tabindex="-1"><i class="mce-ico mce-i-outdent"></i></button></div><div id="mceu_7" class="mce-widget mce-btn mce-last" tabindex="-1" aria-labelledby="mceu_7" role="button" aria-label="Increase indent"><button role="presentation" type="button" tabindex="-1"><i class="mce-ico mce-i-indent"></i></button></div></div></div><div id="mceu_15" class="mce-container mce-flow-layout-item mce-btn-group" role="group"><div id="mceu_15-body"></div></div><div id="mceu_16" class="mce-container mce-flow-layout-item mce-last mce-btn-group" role="group"><div id="mceu_16-body"><div id="mceu_8" class="mce-widget mce-btn mce-first mce-last" tabindex="-1" aria-labelledby="mceu_8" role="button" aria-label="Preview"><button role="presentation" type="button" tabindex="-1"><i class="mce-ico mce-i-preview"></i></button></div></div></div></div></div></div></div><div id="mceu_17" class="mce-edit-area mce-container mce-panel mce-stack-layout-item" hidefocus="1" tabindex="-1" role="group" style="border-width: 1px 0px 0px;"><iframe id="elm1_ifr" frameborder="0" allowtransparency="true" title="Rich Text Area. Press ALT-F9 for menu. Press ALT-F10 for toolbar. Press ALT-0 for help" src="javascript:&quot;&quot;" style="width: 100%; height: 156px; display: block;" data-gramm_id="b1d5219a-47a5-1f28-73bb-47b8d14eea9f" data-gramm="true" gramm-ifr="true" spellcheck="false" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/saved_resource(1).html"></iframe></div><div id="mceu_18" class="mce-statusbar mce-container mce-panel mce-stack-layout-item mce-last" hidefocus="1" tabindex="-1" role="group" style="border-width: 1px 0px 0px;"><div id="mceu_18-body" class="mce-container-body mce-flow-layout"><div id="mceu_19" class="mce-path mce-flow-layout-item mce-first"><div role="button" class="mce-path-item mce-last" data-index="0" tabindex="-1" id="mceu_19-0" aria-level="0">p</div></div><div id="mceu_20" class="mce-flow-layout-item mce-last mce-resizehandle"><i class="mce-ico mce-i-resize"></i></div></div></div></div></div><textarea id="elm1" name="elm1" rows="10" style="width: 100%; display: none;" aria-hidden="true">&lt;p&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;*** NOTE *** - If you want to include code from SQL Server Management Studio (SSMS) in your post, please copy the code from SSMS and paste the code into a text editor like NotePad before copying the code below to remove the SSMS formatting.</textarea>
+			<br>Send me SQL tips:  <input type="checkbox" name="emailflag" value="1">
+			<br>
+			<table>
+			<tbody><tr>
+			<td>
+				<div class="g-recaptcha" data-sitekey="6LcADEQUAAAAAGZYi6gXYSN6Xgp99sRPN1F3JXMo"><div style="width: 304px; height: 78px;"><div><iframe src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/anchor.html" width="304" height="78" role="presentation" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox"></iframe></div><textarea id="g-recaptcha-response" name="g-recaptcha-response" class="g-recaptcha-response" style="width: 250px; height: 40px; border: 1px solid #c1c1c1; margin: 10px 25px; padding: 0px; resize: none;  display: none; "></textarea></div></div>			
+				<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Save Comment" name="go" class="submit" style="background-color: #000080; color: #FFFFFF; font-size: 18px; font-weight: bold;">
+			</td>
+			</tr>
+			</tbody></table>
+		
+		</div>
+
+	</div>
+</form>
+		</div>
+		
+		<div class="hide-for-print">
+			
+
+
+
+
+
+<style type="text/css">
+.ForumPostBodyArea
+{
+	width: 100%;
+	vertical-align: top;
+	overflow: auto;
+}
+</style>
+
+<br><br><br>
+
+				
+
+
+					<table border="0" width="100%" cellspacing="0" cellpadding="4" style="border: 1px solid #CBDCED; table-layout: fixed;">
+					<tbody><tr>
+						<td width="80%" bgcolor="#E8F3FF">
+							<b>Wednesday, June 28, 2017 - 1:54:14 PM - Laura</b>
+						</td>
+						<td style="text-align: right;" bgcolor="#E8F3FF">
+							<a title="read the tip" href="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/#top">Back To Top</a>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="ForumPostBodyArea">
+							<p>&nbsp;hello Percy,</p>
+<p>thanks for you sharing, but i think for the Foreign Key Constraints scripts, should be adding Cascading Referential Integrity Constraints part.</p>
+<p>BR,Laura</p>
+<p>&nbsp;</p>
+<p></p>
+						</td>
+					</tr>
+					</tbody></table>
+<br>
+
+
+				
+
+
+					<table border="0" width="100%" cellspacing="0" cellpadding="4" style="border: 1px solid #CBDCED; table-layout: fixed;">
+					<tbody><tr>
+						<td width="80%" bgcolor="#E8F3FF">
+							<b>Friday, August 05, 2016 - 5:19:52 AM - Pedro</b>
+						</td>
+						<td style="text-align: right;" bgcolor="#E8F3FF">
+							<a title="read the tip" href="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/#top">Back To Top</a>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="ForumPostBodyArea">
+							<p>&nbsp;</p>
+<p>If you run all the scripts against a database, Number of create scripts differ from the drop scripts.</p>
+<p>Anybody noticed that, or am I doing something wrong?</p>
+<p>&nbsp;</p>
+						</td>
+					</tr>
+					</tbody></table>
+<br>
+
+
+				
+
+
+					<table border="0" width="100%" cellspacing="0" cellpadding="4" style="border: 1px solid #CBDCED; table-layout: fixed;">
+					<tbody><tr>
+						<td width="80%" bgcolor="#E8F3FF">
+							<b>Thursday, July 28, 2016 - 7:28:15 AM - Carlo Borreo</b>
+						</td>
+						<td style="text-align: right;" bgcolor="#E8F3FF">
+							<a title="read the tip" href="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/#top">Back To Top</a>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="ForumPostBodyArea">
+							<p>The scripts are exactly what I was looking for.</p>
+<p>The "SQL Server Primary Key and Unique Constraint Creation Script" runs ok.<br>I have a problem executing the "SQL Server Foreign Key Constraint Creation Script" like this:</p>
+<p>Invalid length parameter passed to the LEFT or SUBSTRING function</p>
+<p>There are two SUBSTRING commands, not sure which one is causing it.</p>
+						</td>
+					</tr>
+					</tbody></table>
+<br>
+
+
+				
+
+
+					<table border="0" width="100%" cellspacing="0" cellpadding="4" style="border: 1px solid #CBDCED; table-layout: fixed;">
+					<tbody><tr>
+						<td width="80%" bgcolor="#E8F3FF">
+							<b>Wednesday, March 30, 2016 - 2:22:54 PM - Jagan Kannappan</b>
+						</td>
+						<td style="text-align: right;" bgcolor="#E8F3FF">
+							<a title="read the tip" href="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/#top">Back To Top</a>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="ForumPostBodyArea">
+							<p>I had to make a small change to PK/unique constraints script to order index_columns by key_ordinal rather than the column_id.</p>
+<p>Changed&nbsp;<span style="color: #222222; font-size: 12px; line-height: 18px;">order by ixc.index_column_id to&nbsp;</span><span style="color: #222222; font-size: 12px; line-height: 18px;">order by ixc.key_ordinal&nbsp;</span><span style="color: #222222; font-size: 12px; line-height: 18px;">&nbsp;</span></p>
+						</td>
+					</tr>
+					</tbody></table>
+<br>
+
+
+				
+
+
+					<table border="0" width="100%" cellspacing="0" cellpadding="4" style="border: 1px solid #CBDCED; table-layout: fixed;">
+					<tbody><tr>
+						<td width="80%" bgcolor="#E8F3FF">
+							<b>Saturday, July 25, 2015 - 1:34:46 PM - Enzo</b>
+						</td>
+						<td style="text-align: right;" bgcolor="#E8F3FF">
+							<a title="read the tip" href="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/#top">Back To Top</a>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="ForumPostBodyArea">
+							<p></p>
+<p>&nbsp;</p>
+<p>Hello, I tried your script successfully, but how should you do if you want to copy the identity (1,1) of the primary key?</p>
+<p>&nbsp;</p>
+						</td>
+					</tr>
+					</tbody></table>
+<br>
+
+
+				
+
+
+					<table border="0" width="100%" cellspacing="0" cellpadding="4" style="border: 1px solid #CBDCED; table-layout: fixed;">
+					<tbody><tr>
+						<td width="80%" bgcolor="#E8F3FF">
+							<b>Wednesday, February 25, 2015 - 4:15:43 AM - Thomas Franz</b>
+						</td>
+						<td style="text-align: right;" bgcolor="#E8F3FF">
+							<a title="read the tip" href="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/#top">Back To Top</a>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="ForumPostBodyArea">
+							<p>Beside the fact, that the foreign keys script does not add the cascade options (could be done by adding and replacing of _ by space in the *referential_action_desc-fields of sys.foreign_keys), the primary-key script does not work for partitioned tables / indexes.</p>
+<p>So I modfied it by joining sys.dataspaces (instead of using the FILEGROUP_NAME-function which will fail because the dataspace_id for partitions is &gt; 64k and the function accepts only smallints) and querying the partition column name (ok, it would be a little bit faster, if I had done it in the inner cursor):</p>
+<p>&nbsp;</p>
+<pre>--- SCRIPT TO GENERATE THE CREATION SCRIPT OF ALL PK AND UNIQUE CONSTRAINTS.<br>declare @SchemaName varchar(100)<br>declare @TableName varchar(256)<br>declare @IndexName varchar(256)<br>declare @ColumnName varchar(100)<br>declare @is_unique_constraint varchar(100)<br>declare @IndexTypeDesc varchar(100)<br>declare @FileGroupName varchar(100)<br>declare @is_disabled varchar(100)<br>declare @IndexOptions varchar(max)<br>declare @IndexColumnId int<br>declare @IsDescendingKey int <br>declare @IsIncludedColumn int<br>declare @TSQLScripCreationIndex varchar(max)<br>declare @TSQLScripDisableIndex varchar(max)<br>declare @is_primary_key varchar(100)<br>declare @PartitionColumn varchar(100)<br><br>declare CursorIndex cursor for<br>SELECT Schema_name(t.schema_id)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [schema_name],<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t.NAME,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ix.NAME,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CASE<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHEN ix.is_unique_constraint = 1 THEN ' UNIQUE '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ELSE ''<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CASE<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHEN ix.is_primary_key = 1 THEN ' PRIMARY KEY '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ELSE ''<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ix.type_desc,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CASE WHEN ix.is_padded=1 THEN 'PAD_INDEX = ON, ' ELSE 'PAD_INDEX = OFF, ' END + CASE WHEN ix.allow_page_locks=1 THEN 'ALLOW_PAGE_LOCKS = ON, ' ELSE 'ALLOW_PAGE_LOCKS = OFF, ' END + CASE WHEN ix.allow_row_locks=1 THEN 'ALLOW_ROW_LOCKS = ON, ' ELSE 'ALLOW_ROW_LOCKS = OFF, ' END + CASE WHEN Indexproperty(t.object_id, ix.NAME, 'IsStatistics') = 1 THEN 'STATISTICS_NORECOMPUTE = ON, ' ELSE 'STATISTICS_NORECOMPUTE = OFF, ' END + CASE WHEN ix.ignore_dup_key=1 THEN 'IGNORE_DUP_KEY = ON, ' ELSE 'IGNORE_DUP_KEY = OFF, ' END<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + 'SORT_IN_TEMPDB = OFF, FILLFACTOR ='<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + Cast(ix.fill_factor AS VARCHAR(3)) AS IndexOptions,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ds.NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FileGroupName,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CASE<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHEN ds.type_desc = 'PARTITION_SCHEME' THEN (SELECT c.NAME<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FROM sys.index_columns ic<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; INNER JOIN sys.columns c<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ON c.object_id = ix.object_id<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AND c.column_id = ic.column_id<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHERE ic.partition_ordinal = 1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AND ic.index_id = ix.index_id<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AND ic.object_id = ix.object_id)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ELSE NULL<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; partition_column<br>&nbsp; FROM sys.tables t<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; INNER JOIN sys.indexes ix<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ON t.object_id = ix.object_id<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LEFT JOIN sys.data_spaces ds<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ON ds.data_space_id = ix.data_space_id<br>&nbsp;WHERE 1 = 1<br>&nbsp;&nbsp; AND ix.type &gt; 0<br>&nbsp;&nbsp; AND ( ix.is_primary_key = 1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OR ix.is_unique_constraint = 1 ) --and schema_name(tb.schema_id)= @SchemaName and tb.name=@TableName<br>&nbsp;&nbsp; AND t.is_ms_shipped = 0<br>&nbsp;&nbsp; AND t.NAME &lt;&gt; 'sysdiagrams'<br>&nbsp;ORDER BY Schema_name(t.schema_id),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t.NAME,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ix.NAME&nbsp; <br><br>open CursorIndex<br>fetch next from CursorIndex into&nbsp; @SchemaName, @TableName, @IndexName, @is_unique_constraint, @is_primary_key, @IndexTypeDesc, @IndexOptions, @FileGroupName, @PartitionColumn<br>while (@@fetch_status=0)<br>begin<br>&nbsp;&nbsp; declare @IndexColumns varchar(max)<br>&nbsp;&nbsp; declare @IncludedColumns varchar(max)<br>&nbsp;&nbsp; set @IndexColumns=''<br>&nbsp;&nbsp; set @IncludedColumns=''<br>&nbsp;&nbsp; declare CursorIndexColumn cursor for <br>&nbsp;&nbsp; select col.name, ixc.is_descending_key, ixc.is_included_column<br>&nbsp;&nbsp;&nbsp;&nbsp; from sys.tables&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tb<br>&nbsp;&nbsp;&nbsp; inner join sys.indexes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ix&nbsp; on tb.object_id&nbsp; = ix.object_id<br>&nbsp;&nbsp;&nbsp; inner join sys.index_columns ixc on ix.object_id&nbsp; = ixc.object_id and ix.index_id&nbsp;&nbsp; = ixc.index_id<br>&nbsp;&nbsp;&nbsp; inner join sys.columns&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; col on ixc.object_id = col.object_id and ixc.column_id = col.column_id<br>&nbsp;&nbsp; where ix.type&gt;0 and (ix.is_primary_key=1 or ix.is_unique_constraint=1)<br>&nbsp;&nbsp;&nbsp;&nbsp; and schema_name(tb.schema_id)=@SchemaName and tb.name=@TableName and ix.name=@IndexName<br>&nbsp;&nbsp;&nbsp; order by ixc.index_column_id<br>&nbsp;&nbsp; open CursorIndexColumn <br>&nbsp;&nbsp; fetch next from CursorIndexColumn into&nbsp; @ColumnName, @IsDescendingKey, @IsIncludedColumn<br>&nbsp;&nbsp; while (@@fetch_status=0)<br>&nbsp;&nbsp; begin<br>&nbsp;&nbsp;&nbsp; if @IsIncludedColumn=0 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set @IndexColumns=@IndexColumns + @ColumnName&nbsp; + case when @IsDescendingKey=1&nbsp; then ' DESC, ' else&nbsp; ' ASC, ' end<br>&nbsp;&nbsp;&nbsp; else <br>&nbsp;&nbsp;&nbsp;&nbsp; set @IncludedColumns=@IncludedColumns&nbsp; + @ColumnName&nbsp; +', ' <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; fetch next from CursorIndexColumn into @ColumnName, @IsDescendingKey, @IsIncludedColumn<br>&nbsp;&nbsp; end<br>&nbsp;&nbsp; close CursorIndexColumn<br>&nbsp;&nbsp; deallocate CursorIndexColumn<br>&nbsp;&nbsp; set @IndexColumns = substring(@IndexColumns, 1, len(@IndexColumns)-1)<br>&nbsp;&nbsp; set @IncludedColumns = case when len(@IncludedColumns) &gt;0 then substring(@IncludedColumns, 1, len(@IncludedColumns)-1) else '' end<br>&nbsp; --&nbsp; print @IndexColumns<br>&nbsp; --&nbsp; print @IncludedColumns<br>&nbsp; <br>&nbsp; set @TSQLScripCreationIndex =''<br>&nbsp; set @TSQLScripDisableIndex =''<br>&nbsp; set&nbsp; @TSQLScripCreationIndex='ALTER TABLE '+&nbsp; QUOTENAME(@SchemaName) +'.'+ QUOTENAME(@TableName)+ ' ADD CONSTRAINT ' +&nbsp; QUOTENAME(@IndexName) + @is_unique_constraint + @is_primary_key + +@IndexTypeDesc +&nbsp; '('+@IndexColumns+') '+ <br>&nbsp;&nbsp; case when len(@IncludedColumns)&gt;0 then CHAR(13) +'INCLUDE (' + @IncludedColumns+ ')' else '' end + CHAR(13)+'WITH (' + @IndexOptions+ ') ON ' + concat(QUOTENAME(@FileGroupName), '(' + @PartitionColumn + ')')&nbsp; + ';'&nbsp; <br>&nbsp; <br>&nbsp; print @TSQLScripCreationIndex<br>&nbsp; print @TSQLScripDisableIndex<br><br>fetch next from CursorIndex into&nbsp; @SchemaName, @TableName, @IndexName, @is_unique_constraint, @is_primary_key, @IndexTypeDesc, @IndexOptions, @FileGroupName, @PartitionColumn<br><br>end<br>close CursorIndex<br>deallocate CursorIndex<br><br><br></pre>
+						</td>
+					</tr>
+					</tbody></table>
+<br>
+
+
+				
+
+
+					<table border="0" width="100%" cellspacing="0" cellpadding="4" style="border: 1px solid #CBDCED; table-layout: fixed;">
+					<tbody><tr>
+						<td width="80%" bgcolor="#E8F3FF">
+							<b>Wednesday, January 07, 2015 - 7:56:58 AM - Azim</b>
+						</td>
+						<td style="text-align: right;" bgcolor="#E8F3FF">
+							<a title="read the tip" href="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/#top">Back To Top</a>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="ForumPostBodyArea">
+							<p>Thank you, the information was very helpful.</p>
+						</td>
+					</tr>
+					</tbody></table>
+<br>
+
+
+				
+
+
+					<table border="0" width="100%" cellspacing="0" cellpadding="4" style="border: 1px solid #CBDCED; table-layout: fixed;">
+					<tbody><tr>
+						<td width="80%" bgcolor="#E8F3FF">
+							<b>Tuesday, January 06, 2015 - 12:41:48 PM - Greg Robidoux</b>
+						</td>
+						<td style="text-align: right;" bgcolor="#E8F3FF">
+							<a title="read the tip" href="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/#top">Back To Top</a>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="ForumPostBodyArea">
+							<p>Thanks Richard and David for pointing out the issues., the errors&nbsp;have all been fixed.&nbsp; Their was an issue with our&nbsp;web editing tool.</p>
+<p>-Greg</p>
+						</td>
+					</tr>
+					</tbody></table>
+<br>
+
+
+				
+
+
+					<table border="0" width="100%" cellspacing="0" cellpadding="4" style="border: 1px solid #CBDCED; table-layout: fixed;">
+					<tbody><tr>
+						<td width="80%" bgcolor="#E8F3FF">
+							<b>Tuesday, January 06, 2015 - 11:54:39 AM - Richard</b>
+						</td>
+						<td style="text-align: right;" bgcolor="#E8F3FF">
+							<a title="read the tip" href="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/#top">Back To Top</a>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="ForumPostBodyArea">
+							<pre style="font-size: 12px;">Some errors in the scripts:</pre>
+<ul>
+<li>
+<p>declare @SchemaName varchar(100)<strong>eclare</strong> @TableName varchar(256)</p>
+</li>
+<li>declare @ForeignKeyID int<strong>eclare</strong> @ForeignKeyName varchar(4000)</li>
+<li><strong>dea</strong>deallocate CursorFK</li>
+</ul>
+<pre style="font-size: 12px;">&nbsp;</pre>
+						</td>
+					</tr>
+					</tbody></table>
+<br>
+
+
+				
+
+
+					<table border="0" width="100%" cellspacing="0" cellpadding="4" style="border: 1px solid #CBDCED; table-layout: fixed;">
+					<tbody><tr>
+						<td width="80%" bgcolor="#E8F3FF">
+							<b>Tuesday, January 06, 2015 - 11:11:48 AM - David Wanta</b>
+						</td>
+						<td style="text-align: right;" bgcolor="#E8F3FF">
+							<a title="read the tip" href="https://www.mssqltips.com/sqlservertip/3443/script-all-primary-keys-unique-constraints-and-foreign-keys-in-a-sql-server-database-using-tsql/#top">Back To Top</a>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="ForumPostBodyArea">
+							<p>Good morning!</p>
+<p>&nbsp;</p>
+<p>I was very interested in your script.&nbsp; Thank you for providing this info.&nbsp; I noticed a couple of issues with the very first script.&nbsp; For example these lines:</p>
+<p>declare @SchemaName varchar(100)eclare @TableName varchar(256)</p>
+<p>deadeallocate CursorIndex</p>
+<p>Would you mind double checking that the right/final version was included in the article before I dig in too far?</p>
+<p>&nbsp;</p>
+<p>Thanks and have a great day,</p>
+<p>David</p>
+						</td>
+					</tr>
+					</tbody></table>
+<br>
+
+
+				
+		</div>
+		
+
+
+	</div>
+
+	
+	<aside class="large-3 hide-for-print columns">
+
+		
+
+	<script data-cfasync="false" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/email-decode.min.js.download"></script><script language="Javascript">
+	function ValidateEmail(inputText)
+	{
+		var mailformat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		if(inputText.value.match(mailformat))
+		{
+			document.optin.ea.focus();
+			return true;
+		}
+		else
+		{
+			alert("You have entered an invalid email address!");
+			document.optin.ea.focus();
+			return false;
+		}
+	}
+
+	</script>
+
+	<div id="sticky" align="center" class="">
+
+	<div id="search-div" style="height:300px;">
+		<div id="signup-div">		
+		<div style="text-align: center;"><a href="https://www.mssqltips.com/get-free-sql-server-tips/?ref=LeftGFSTSlant"><img border="0" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/GetFreeSQLTips.png"></a></div>
+
+			<form action="https://www.mssqltips.com/get-free-sql-server-tips/" method="post" name="optin" onsubmit="return ValidateEmail(document.optin.ea)">
+				<div style="text-align: center;">
+					<input name="URL" type="hidden" value="leftform">
+					<input name="ReferralURL" type="hidden" value="">
+					<input size="25" type="text" onblur="if (this.value==&#39;&#39;) this.value=this.defaultValue" onclick="if (this.defaultValue==this.value) this.value=&#39;&#39;" value="enter email address" name="ea">
+					<input type="submit" name="Button1" value="Join">
+				</div>
+			</form>
+		</div>
+	</div>
+	</div>
+<!-- 160x600-Primary -->
+<div align="center">
+	<div id="div-gpt-ad-1388505177750-0" style="width:160px; height:800px;" data-google-query-id="CJPb89G_sdkCFcS_dwodX5cHwg">
+	<script type="text/javascript">
+	googletag.cmd.push(function() { googletag.display('div-gpt-ad-1388505177750-0'); });
+	</script>
+	<div id="google_ads_iframe_/53998264/160x600-Primary_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/53998264/160x600-Primary_0" title="3rd party ad content" name="google_ads_iframe_/53998264/160x600-Primary_0" width="160" height="600" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" style="border: 0px; vertical-align: bottom;" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/saved_resource(2).html"></iframe></div></div>
+</div><!-- 300x250-Primary -->
+<div align="center">
+	<div id="div-gpt-ad-1388505177750-2" style="width:300px; height:450px;" data-google-query-id="CJXb89G_sdkCFcS_dwodX5cHwg">
+	<script type="text/javascript">
+	googletag.cmd.push(function() { googletag.display('div-gpt-ad-1388505177750-2'); });
+	</script>
+	<div id="google_ads_iframe_/53998264/300x250-Primary_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/53998264/300x250-Primary_0" title="3rd party ad content" name="google_ads_iframe_/53998264/300x250-Primary_0" width="300" height="250" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" style="border: 0px; vertical-align: bottom;" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/saved_resource(3).html"></iframe></div></div>
+</div><div align="center">
+	<br>
+	<!-- /53998264/170x90-pos1 -->
+	<div id="div-gpt-ad-1481919244109-0" style="height:90px; width:170px;" data-google-query-id="CJjb89G_sdkCFcS_dwodX5cHwg">
+	<script>
+	googletag.cmd.push(function() { googletag.display('div-gpt-ad-1481919244109-0'); });
+	</script>
+	<div id="google_ads_iframe_/53998264/170x90-pos1_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/53998264/170x90-pos1_0" title="3rd party ad content" name="google_ads_iframe_/53998264/170x90-pos1_0" width="170" height="90" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" style="border: 0px; vertical-align: bottom;" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/saved_resource(4).html"></iframe></div></div>
+	<br>
+	<br>
+	<br>
+
+	<br>
+	<!-- /53998264/170x90-pos2 -->
+	<div id="div-gpt-ad-1481919244109-1" style="height:90px; width:170px;" data-google-query-id="CJnb89G_sdkCFcS_dwodX5cHwg">
+	<script>
+	googletag.cmd.push(function() { googletag.display('div-gpt-ad-1481919244109-1'); });
+	</script>
+	<div id="google_ads_iframe_/53998264/170x90-pos2_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/53998264/170x90-pos2_0" title="3rd party ad content" name="google_ads_iframe_/53998264/170x90-pos2_0" width="170" height="90" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" style="border: 0px; vertical-align: bottom;" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/saved_resource(5).html"></iframe></div></div>
+	<br>
+	<br>
+	<br>
+
+	<br>
+	<!-- /53998264/170x90-pos3 -->
+	<div id="div-gpt-ad-1481919244109-2" style="height:90px; width:170px;" data-google-query-id="CJrb89G_sdkCFcS_dwodX5cHwg">
+	<script>
+	googletag.cmd.push(function() { googletag.display('div-gpt-ad-1481919244109-2'); });
+	</script>
+	<div id="google_ads_iframe_/53998264/170x90-pos3_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/53998264/170x90-pos3_0" title="3rd party ad content" name="google_ads_iframe_/53998264/170x90-pos3_0" width="170" height="90" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" style="border: 0px; vertical-align: bottom;" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/saved_resource(6).html"></iframe></div></div>
+	<br>
+	<br>
+	<br>
+
+	<br>
+	<!-- /53998264/170x90-pos4 -->
+	<div id="div-gpt-ad-1481919244109-3" style="height:90px; width:170px;" data-google-query-id="CJvb89G_sdkCFcS_dwodX5cHwg">
+	<script>
+	googletag.cmd.push(function() { googletag.display('div-gpt-ad-1481919244109-3'); });
+	</script>
+	<div id="google_ads_iframe_/53998264/170x90-pos4_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/53998264/170x90-pos4_0" title="3rd party ad content" name="google_ads_iframe_/53998264/170x90-pos4_0" width="170" height="90" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" style="border: 0px; vertical-align: bottom;" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/saved_resource(7).html"></iframe></div></div>
+	<br>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br><!-- 160x600-Secondary -->
+<div align="center">
+	<div id="div-gpt-ad-1388505177750-1" style="width:160px; height:800px;" data-google-query-id="CKWe99G_sdkCFUKZdwod2o8AAA">
+	<div id="google_ads_iframe_/53998264/160x600-Secondary_0__container__" style="border: 0pt none; display: inline-block; width: 160px; height: 600px;"><iframe frameborder="0" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/container.html" id="google_ads_iframe_/53998264/160x600-Secondary_0" title="3rd party ad content" name="" scrolling="no" marginwidth="0" marginheight="0" width="160" height="600" data-is-safeframe="true" sandbox="allow-forms allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" style="border: 0px; vertical-align: bottom;"></iframe></div><script type="text/javascript">
+	googletag.cmd.push(function() { googletag.display('div-gpt-ad-1388505177750-1'); });
+	</script>
+	</div>
+</div>	<!-- 300x250-Secondary -->
+<div align="center">
+	<div id="div-gpt-ad-1388505177750-3" style="width:300px; height:250px;" data-google-query-id="CLek99G_sdkCFdaHdwod8YANUw">
+	<script type="text/javascript">
+	googletag.cmd.push(function() { googletag.display('div-gpt-ad-1388505177750-3'); });
+	</script><div id="google_ads_iframe_/53998264/300x250-Secondary_0__container__" style="border: 0pt none; display: inline-block; width: 300px; height: 250px;"><iframe frameborder="0" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/container(1).html" id="google_ads_iframe_/53998264/300x250-Secondary_0" title="3rd party ad content" name="" scrolling="no" marginwidth="0" marginheight="0" width="300" height="250" data-is-safeframe="true" sandbox="allow-forms allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" style="border: 0px; vertical-align: bottom;"></iframe></div>
+	</div>
+</div>	 <br><br><br> 
+
+		<div id="sticky-anchor" style="height: 0px;"></div>
+
+		
+
+
+    </aside>
+    
+
+</div>
+
+
+<footer class="row">
+<div class="large-12 columns">
+	<hr>
+	<div class="row hide-for-print">
+		<div class="large-2 medium-3 columns hide-for-small">
+			<h3><span style="color:#3B6D93">Follow</span></h3>
+			<a href="https://www.mssqltips.com/get-free-sql-server-tips/?ref=GetFooterMenu">Get Free SQL Tips</a><br><br>
+			<a href="https://twitter.com/mssqltips" target="_blank">Twitter</a><br><br>
+			<a href="https://www.linkedin.com/grp/home?gid=2320891" target="_blank">LinkedIn</a><br><br>
+			<a href="https://plus.google.com/+Mssqltips_est_2006/posts" target="_blank">Google+</a><br><br>
+			<a href="https://www.facebook.com/pages/MSSQLTips/155636491141708" target="_blank">Facebook</a><br><br>
+			<a href="https://www.pinterest.com/mssqltips/" target="_blank">Pinterest</a><br><br>
+			<a href="https://feeds.feedburner.com/MSSQLTips-LatestSqlServerTips" target="_blank">RSS</a><br>
+		</div>
+		
+		<div class="large-2 medium-3 small-6 columns">
+			<h3><span style="color:#3B6D93">Learning</span></h3>
+			<a href="https://www.mssqltips.com/sql-server-dba-resources/">DBAs</a><br><br>
+			<a href="https://www.mssqltips.com/sql-server-developer-resources/">Developers</a><br><br>
+			<a href="https://www.mssqltips.com/sql-server-business-intelligence-resources/">BI Professionals</a><br><br>
+			<a href="https://www.mssqltips.com/sql-server-professional-development-resources/">Careers</a><br><br>
+			<a href="http://sqlserverquestions.mssqltips.com/questionlist.asp">Q and A</a><br><br>
+			<a href="https://www.mssqltips.com/todays-sql-server-tip/">Today's Tip</a><br>
+		</div>	
+
+		<div class="large-2 medium-3 small-6 columns">
+			<h3><span style="color:#3B6D93">Resources</span></h3>
+			<a href="https://www.mssqltips.com/sql-server-tutorials/">Tutorials</a><br><br>
+			<a href="https://www.mssqltips.com/sql-server-webcasts/">Webcasts</a><br><br>
+			<a href="https://www.mssqltips.com/sql-server-whitepapers/">Whitepapers</a><br><br>
+			<a href="https://www.mssqltips.com/sql-server-tools/">Tools</a><br><br>
+		</div>
+		
+		<div class="large-2 medium-3 columns hide-for-small">
+			<h3><span style="color:#3B6D93">Search</span></h3>
+			<a href="https://www.mssqltips.com/sql-server-categories/">Tip Categories</a><br><br>
+			<a href="https://www.mssqltips.com/search-tip-id/">Search By TipID</a><br><br>
+			<a href="https://www.mssqltips.com/sql-server-mssqltips-authors/">Authors</a><br>
+		</div>
+		
+		<div class="large-2 hide-for-medium columns hide-for-small">
+			<h3><span style="color:#3B6D93">Community</span></h3>
+			<a href="https://www.mssqltips.com/learn-more-about-mssqltips/">First Timer?</a><br><br>
+			<a href="https://www.mssqltips.com/mssqltips-community/1/">Pictures</a><br><br>
+			<a href="https://www.mssqltips.com/contribute/">Contribute</a><br><br>
+			<a href="https://www.mssqltips.com/sql-server-event-list/">Event Calendar</a><br><br>
+			<a href="https://www.mssqltips.com/sql-server-user-groups/">User Groups</a><br><br>
+			<a href="https://www.mssqltips.com/mssqltips-author-of-year/">Author of the Year</a><br><br>
+		</div>
+		
+		<div class="large-2 hide-for-medium columns hide-for-small">
+			<h3><span style="color:#3B6D93">More Info</span></h3>
+			<a href="https://www.mssqltips.com/get-free-sql-server-tips/?ref=JoinFooterMenu">Join</a><br><br>
+			<a href="https://www.mssqltips.com/about/">About</a><br><br>
+			<a href="https://www.mssqltips.com/copyright/">Copyright</a><br><br>
+			<a href="https://www.mssqltips.com/privacy/">Privacy</a><br><br>
+			<a href="https://www.mssqltips.com/disclaimer/">Disclaimer</a><br><br>
+			<a href="https://www.mssqltips.com/feedback/">Feedback</a><br><br>
+			<a href="https://www.mssqltips.com/advertise/">Advertise</a><br>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="large-12 columns text-center">
+			<p>Copyright (c) 2006-2018 <a href="https://www.edgewoodsolutions.com/">Edgewood Solutions, LLC</a> All rights reserved<br>
+			<small>Some names and products listed are the registered trademarks of their respective owners.</small></p>
+		</div>
+	</div>
+</div>
+</footer>
+
+
+<!-- dropdown 990x30 -->
+<style type="text/css">
+#slideboxtop{
+    width:100%;
+    height:50px;
+    padding:10px;
+    background-color:#FFFFFF;
+    border-bottom:1px solid #000000;
+    position:fixed;
+    top: -250px;
+	-moz-box-shadow:-2px 0px 5px #aaa;
+	-webkit-box-shadow:-2px 0px 5px #aaa;
+/* 	box-shadow:-2px 0px 5px #aaa;    */
+}
+</style>
+
+<div class="hide-for-small hide-for-medium hide-for-print">
+	<div id="slideboxtop" style="z-index: 99; top: 0px;">
+		<div style="text-align:center">
+			<a onclick="_gaq.push([&#39;_trackEvent&#39;, &#39;990x30&#39;, &#39;Click&#39;, &#39;Dropdown&#39;]);" target="_blank" href="https://www.mssqltips.com/ss.asp?id=3612&amp;link=https://www.mssqltips.com/mssqltips-giveaway-vslive-boston/?ref=ss20180219"><img src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/mssqltips_990x30_vslive_boston.png" border="0" height="30" width="990" alt="Learn more about SQL Server tools"></a>
+		</div>
+	</div>
+</div>
+
+<script src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/modernizr.js.download"></script>
+<script type="text/javascript" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/jquery.min.js.download"></script>
+
+
+
+<link type="text/css" href="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/prettify.css" rel="stylesheet">
+<script type="text/javascript" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/prettify.js.download"></script>
+<script type="text/javascript" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/lang-sql.js.download"></script>
+
+
+
+<script type="text/javascript">
+$(function() {
+	$(window).scroll(function(){
+		if  ($(window).scrollTop() > 250)
+			$('#slideboxtop').animate({'top':'0px'});
+		else
+			$('#slideboxtop').stop(true).animate({'top':'-250px'});
+	});
+});
+</script>
+
+
+<!-- sticky 300x250 -->
+<style type="text/css">
+#sticky {
+    padding: 0ex;
+    width: 300px;
+    background-color: #fff;
+}
+
+#sticky.stick {
+    margin-top: 75px !important;
+    position: fixed;
+    top: 0;
+    z-index: 10000;
+}
+</style>
+
+<script type="text/javascript">
+function sticky_relocate() {
+    var window_top = $(window).scrollTop();
+    var div_top = $('#sticky-anchor').offset().top;
+    var window_width = $(window).width();
+    var window_height = $(window).height();
+    if (window_top > div_top && window_width > 1100 && window_height > 400 ) {
+        $('#sticky').addClass('stick');
+        $('#sticky-anchor').height($('#sticky').outerHeight());
+    } else {
+        $('#sticky').removeClass('stick');
+        $('#sticky-anchor').height(0);
+    }
+}
+
+$(function() {
+    $(window).scroll(sticky_relocate);
+    sticky_relocate();
+});
+
+</script>
+
+<!-- Start Alexa Certify Javascript -->
+<script type="text/javascript">
+_atrk_opts = { atrk_acct:"oydse1a8gR00wM", domain:"mssqltips.com",dynamic: true};
+(function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();
+</script>
+<noscript>&lt;img src="https://d5nxst8fruw4z.cloudfront.net/atrk.gif?account=oydse1a8gR00wM" style="display:none" height="1" width="1" alt="" /&gt;</noscript>
+<!-- End Alexa Certify Javascript -->
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-910745-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+
+
+<iframe scrolling="no" frameborder="0" allowtransparency="true" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/widget_iframe.36c0c29c73929bf937f4c70adb1a29e4.html" style="display: none;"></iframe><iframe id="google_osd_static_frame_8378147110018" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/saved_resource(8).html"></iframe><span style="border-radius: 3px; text-indent: 20px; width: auto; padding: 0px 4px 0px 0px; text-align: center; font-style: normal; font-variant: normal; font-weight: bold; font-stretch: normal; font-size: 11px; line-height: 20px; font-family: &quot;Helvetica Neue&quot;, Helvetica, sans-serif; color: rgb(255, 255, 255); background: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMzBweCIgd2lkdGg9IjMwcHgiIHZpZXdCb3g9Ii0xIC0xIDMxIDMxIj48Zz48cGF0aCBkPSJNMjkuNDQ5LDE0LjY2MiBDMjkuNDQ5LDIyLjcyMiAyMi44NjgsMjkuMjU2IDE0Ljc1LDI5LjI1NiBDNi42MzIsMjkuMjU2IDAuMDUxLDIyLjcyMiAwLjA1MSwxNC42NjIgQzAuMDUxLDYuNjAxIDYuNjMyLDAuMDY3IDE0Ljc1LDAuMDY3IEMyMi44NjgsMC4wNjcgMjkuNDQ5LDYuNjAxIDI5LjQ0OSwxNC42NjIiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+PHBhdGggZD0iTTE0LjczMywxLjY4NiBDNy41MTYsMS42ODYgMS42NjUsNy40OTUgMS42NjUsMTQuNjYyIEMxLjY2NSwyMC4xNTkgNS4xMDksMjQuODU0IDkuOTcsMjYuNzQ0IEM5Ljg1NiwyNS43MTggOS43NTMsMjQuMTQzIDEwLjAxNiwyMy4wMjIgQzEwLjI1MywyMi4wMSAxMS41NDgsMTYuNTcyIDExLjU0OCwxNi41NzIgQzExLjU0OCwxNi41NzIgMTEuMTU3LDE1Ljc5NSAxMS4xNTcsMTQuNjQ2IEMxMS4xNTcsMTIuODQyIDEyLjIxMSwxMS40OTUgMTMuNTIyLDExLjQ5NSBDMTQuNjM3LDExLjQ5NSAxNS4xNzUsMTIuMzI2IDE1LjE3NSwxMy4zMjMgQzE1LjE3NSwxNC40MzYgMTQuNDYyLDE2LjEgMTQuMDkzLDE3LjY0MyBDMTMuNzg1LDE4LjkzNSAxNC43NDUsMTkuOTg4IDE2LjAyOCwxOS45ODggQzE4LjM1MSwxOS45ODggMjAuMTM2LDE3LjU1NiAyMC4xMzYsMTQuMDQ2IEMyMC4xMzYsMTAuOTM5IDE3Ljg4OCw4Ljc2NyAxNC42NzgsOC43NjcgQzEwLjk1OSw4Ljc2NyA4Ljc3NywxMS41MzYgOC43NzcsMTQuMzk4IEM4Ljc3NywxNS41MTMgOS4yMSwxNi43MDkgOS43NDksMTcuMzU5IEM5Ljg1NiwxNy40ODggOS44NzIsMTcuNiA5Ljg0LDE3LjczMSBDOS43NDEsMTguMTQxIDkuNTIsMTkuMDIzIDkuNDc3LDE5LjIwMyBDOS40MiwxOS40NCA5LjI4OCwxOS40OTEgOS4wNCwxOS4zNzYgQzcuNDA4LDE4LjYyMiA2LjM4NywxNi4yNTIgNi4zODcsMTQuMzQ5IEM2LjM4NywxMC4yNTYgOS4zODMsNi40OTcgMTUuMDIyLDYuNDk3IEMxOS41NTUsNi40OTcgMjMuMDc4LDkuNzA1IDIzLjA3OCwxMy45OTEgQzIzLjA3OCwxOC40NjMgMjAuMjM5LDIyLjA2MiAxNi4yOTcsMjIuMDYyIEMxNC45NzMsMjIuMDYyIDEzLjcyOCwyMS4zNzkgMTMuMzAyLDIwLjU3MiBDMTMuMzAyLDIwLjU3MiAxMi42NDcsMjMuMDUgMTIuNDg4LDIzLjY1NyBDMTIuMTkzLDI0Ljc4NCAxMS4zOTYsMjYuMTk2IDEwLjg2MywyNy4wNTggQzEyLjA4NiwyNy40MzQgMTMuMzg2LDI3LjYzNyAxNC43MzMsMjcuNjM3IEMyMS45NSwyNy42MzcgMjcuODAxLDIxLjgyOCAyNy44MDEsMTQuNjYyIEMyNy44MDEsNy40OTUgMjEuOTUsMS42ODYgMTQuNzMzLDEuNjg2IiBmaWxsPSIjYmQwODFjIj48L3BhdGg+PC9nPjwvc3ZnPg==&quot;) 3px 50% / 14px 14px no-repeat rgb(189, 8, 28); position: absolute; opacity: 1; z-index: 8675309; display: none; cursor: pointer; border: none; -webkit-font-smoothing: antialiased; top: 85px; left: 1022px;">Save</span><span style="width: 24px; height: 24px; background: url(&quot;data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pjxzdmcgd2lkdGg9IjI0cHgiIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxkZWZzPjxtYXNrIGlkPSJtIj48cmVjdCBmaWxsPSIjZmZmIiB4PSIwIiB5PSIwIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHJ4PSI2IiByeT0iNiIvPjxyZWN0IGZpbGw9IiMwMDAiIHg9IjUiIHk9IjUiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNCIgcng9IjEiIHJ5PSIxIi8+PHJlY3QgZmlsbD0iIzAwMCIgeD0iMTAiIHk9IjAiIHdpZHRoPSI0IiBoZWlnaHQ9IjI0Ii8+PHJlY3QgZmlsbD0iIzAwMCIgeD0iMCIgeT0iMTAiIHdpZHRoPSIyNCIgaGVpZ2h0PSI0Ii8+PC9tYXNrPjwvZGVmcz48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9IiNmZmYiIG1hc2s9InVybCgjbSkiLz48L3N2Zz4=&quot;) 50% 50% / 14px 14px no-repeat rgba(0, 0, 0, 0.4); position: absolute; opacity: 1; z-index: 8675309; display: none; cursor: pointer; border: none; border-radius: 12px; top: 83px; left: 1280px;"></span><table cellspacing="0" cellpadding="0" class="gstl_50 gssb_c" style="width: 703px; display: none; top: 124px; position: absolute; left: 279px;"><tbody><tr><td class="gssb_f"></td><td class="gssb_e" style="width: 100%;"></td></tr></tbody></table><iframe name="oauth2relay343096159" id="oauth2relay343096159" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/postmessageRelay.html" tabindex="-1" aria-hidden="true" style="width: 1px; height: 1px; position: absolute; top: -100px;"></iframe><div style="background-color: #fff; border: 1px solid #ccc; box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2); position: absolute; left: 0px; top: -10000px; transition: visibility 0s linear 0.3s, opacity 0.3s linear; opacity: 0; visibility: hidden; z-index: 2000000000;"><div style="width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; z-index: 2000000000; background-color: #fff; opacity: 0.05;  filter: alpha(opacity=5)"></div><div class="g-recaptcha-bubble-arrow" style="border: 11px solid transparent; width: 0; height: 0; position: absolute; pointer-events: none; margin-top: -11px; z-index: 2000000000;"></div><div class="g-recaptcha-bubble-arrow" style="border: 10px solid transparent; width: 0; height: 0; position: absolute; pointer-events: none; margin-top: -10px; z-index: 2000000000;"></div><div style="z-index: 2000000000; position: relative;"><iframe title="recaptcha challenge" src="./Script all Primary Keys, Unique Constraints and Foreign Keys in a SQL Server database using T-SQL_files/bframe.html" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox" name="b2b0p4wlntee" style="width: 100%; height: 100%;"></iframe></div></div></body></html>

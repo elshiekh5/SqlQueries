@@ -1,0 +1,29 @@
+-- ==========================================================================================
+BEGIN TRANSACTION [Tran1]
+
+BEGIN TRY
+-- ==========================================================================================
+COMMIT TRANSACTION [Tran2]
+END TRY
+BEGIN CATCH
+  ROLLBACK TRANSACTION [Tran2]
+	DECLARE @ErrorMessage NVARCHAR(4000)
+	Select @ErrorMessage = ERROR_MESSAGE()
+
+     SELECT 
+        ERROR_NUMBER() AS ErrorNumber,
+        ERROR_SEVERITY() AS ErrorSeverity,
+        ERROR_STATE() as ErrorState,
+        ERROR_PROCEDURE() as ErrorProcedure,
+        ERROR_LINE() as ErrorLine,
+        ERROR_MESSAGE() as ErrorMessage;
+-------------------
+
+	EXEC [EducationalSupervision].[JobLog_AddLogRecord] @VisitPlanId = 0,   -- bigint
+	                                                    @VisitId = 0,       -- bigint
+	                                                    @StoredName = 'Allocations_UpdateVisitPlans',   -- varchar(250)
+	                                                    @Status = 'Error',       -- varchar(50)
+	                                                    @Query = Null,        -- varchar(4000)
+	                                                    @ErrorMessage = @ErrorMessage -- nvarchar(4000)
+END CATCH  
+-- ==========================================================================================

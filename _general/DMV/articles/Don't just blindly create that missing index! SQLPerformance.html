@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<!-- saved from url=(0062)https://sqlperformance.com/2013/06/t-sql-queries/missing-index -->
+<html lang="en-US" prefix="og: http://ogp.me/ns#"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script async="" src="https://graph.facebook.com/?callback=WPCOMSharing.update_facebook_count&amp;ids=https%3A%2F%2Fsqlperformance.com%2F2013%2F06%2Ft-sql-queries%2Fmissing-index&amp;_=1512296660948"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="pingback" href="https://sqlperformance.com/xmlrpc.php">
+<style type="text/css">/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.tsql .de1, .tsql .de2 {}
+.tsql  {font-family:consolas,monospace;}
+.tsql .imp {font-weight: bold; color: red;}
+.tsql li, .tsql .li1 {font-weight: normal; vertical-align:top;}
+.tsql .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.tsql .li2 {font-weight: bold; vertical-align:top;}
+.tsql .kw1 {color: #FF99FF;}
+.tsql .kw2 {color: #9898FF;}
+.tsql .kw3 {color: #80FF80;}
+.tsql .kw4 {color: #80FF80;}
+.tsql .kw5 {color: #80FF80;}
+.tsql .kw6 {color: #80FF80;}
+.tsql .kw7 {color: #c3c3c3;}
+.tsql .co1 {color: #FFAF2D;}
+.tsql .coMULTI {color: #FFAF2D;}
+.tsql .es_h {color: #FFFF00;}
+.tsql .br0 {color: #c3c3c3;}
+.tsql .sy0 {color: #c3c3c3;}
+.tsql .st0 {color: #FFFF00;}
+.tsql .st_h {color: #FFFF00;}
+.tsql .nu0 {color: #fff;}
+.tsql .me1 {color: #ccc;}
+.tsql .me2 {color: #ccc;}
+.tsql .re0 {color: #ccc;}
+.tsql .re1 {color: #ccc;}
+.tsql .ln-xtra, .tsql li.ln-xtra, .tsql div.ln-xtra {background-color: #ffc;}
+.tsql span.xtra { display:block; }
+</style>
+<!-- This site is optimized with the Yoast SEO plugin v5.8 - https://yoast.com/wordpress/plugins/seo/ -->
+<title>Don't just blindly create that missing index! SQLPerformance</title>
+<meta name="description" content="SentryOne&#39;s @AaronBertrand discusses additional source of information useful for decisions about creating indexes suggested as &quot;missing&quot; by various tools.">
+<link rel="canonical" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Don&#39;t just blindly create that missing index! SQLPerformance">
+<meta property="og:description" content="SentryOne&#39;s @AaronBertrand discusses additional source of information useful for decisions about creating indexes suggested as &quot;missing&quot; by various tools.">
+<meta property="og:url" content="https://sqlperformance.com/2013/06/t-sql-queries/missing-index">
+<meta property="og:site_name" content="SQLPerformance.com">
+<meta property="article:tag" content="missing indexes">
+<meta property="article:section" content="SQL Indexes">
+<meta property="article:published_time" content="2013-06-06T13:04:40+00:00">
+<meta property="article:modified_time" content="2017-05-08T18:39:55+00:00">
+<meta property="og:updated_time" content="2017-05-08T18:39:55+00:00">
+<meta property="og:image" content="https://sqlperformance.com/wp-content/uploads/2013/06/mi_1.png">
+<meta property="og:image:secure_url" content="https://sqlperformance.com/wp-content/uploads/2013/06/mi_1.png">
+<meta property="og:image" content="https://sqlperformance.com/wp-content/uploads/2013/06/mi_2.png">
+<meta property="og:image:secure_url" content="https://sqlperformance.com/wp-content/uploads/2013/06/mi_2.png">
+<script async="" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/analytics.js.download"></script><script type="application/ld+json">{"@context":"http:\/\/schema.org","@type":"WebSite","@id":"#website","url":"https:\/\/sqlperformance.com\/","name":"SQLPerformance.com","potentialAction":{"@type":"SearchAction","target":"https:\/\/sqlperformance.com\/?s={search_term_string}","query-input":"required name=search_term_string"}}</script>
+<!-- / Yoast SEO plugin. -->
+
+<link rel="dns-prefetch" href="https://s0.wp.com/">
+<link rel="dns-prefetch" href="https://fonts.googleapis.com/">
+<link rel="dns-prefetch" href="https://s.w.org/">
+<link rel="alternate" type="application/rss+xml" title="SQLPerformance.com » Don&#39;t just blindly create those &quot;missing&quot; indexes! Comments Feed" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index/feed">
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.3\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.3\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/sqlperformance.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.9.1"}};
+			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55358,56794,8205,9794,65039],[55358,56794,8203,9794,65039]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script><script src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/wp-emoji-release.min.js.download" type="text/javascript" defer=""></script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="responsive-lightbox-prettyphoto-css" href="./Don&#39;t just blindly create that missing index! SQLPerformance_files/prettyPhoto.css" type="text/css" media="all">
+<link rel="stylesheet" id="stcr-plugin-style-css" href="./Don&#39;t just blindly create that missing index! SQLPerformance_files/stcr-plugin-style.css" type="text/css" media="all">
+<link rel="stylesheet" id="wordpress-popular-posts-css-css" href="./Don&#39;t just blindly create that missing index! SQLPerformance_files/wpp.css" type="text/css" media="all">
+<link rel="stylesheet" id="worldwide-font-css" href="./Don&#39;t just blindly create that missing index! SQLPerformance_files/css" type="text/css" media="all">
+<link rel="stylesheet" id="worldwide-basic-style-css" href="./Don&#39;t just blindly create that missing index! SQLPerformance_files/style.css" type="text/css" media="all">
+<link rel="stylesheet" id="worldwide-responsive-css" href="./Don&#39;t just blindly create that missing index! SQLPerformance_files/responsive.css" type="text/css" media="all">
+<link rel="stylesheet" id="worldwide-basic-css" href="./Don&#39;t just blindly create that missing index! SQLPerformance_files/basic.css" type="text/css" media="all">
+<link rel="stylesheet" id="wp_geshi_wp-geshi-highlight-css" href="./Don&#39;t just blindly create that missing index! SQLPerformance_files/wp-geshi-highlight.css" type="text/css" media="all">
+<link rel="stylesheet" id="social-logos-css" href="./Don&#39;t just blindly create that missing index! SQLPerformance_files/social-logos.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="jetpack_css-css" href="./Don&#39;t just blindly create that missing index! SQLPerformance_files/jetpack.css" type="text/css" media="all">
+<script type="text/javascript" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/jquery.js.download"></script>
+<script type="text/javascript" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/jquery-migrate.min.js.download"></script>
+<script type="text/javascript" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/jquery.prettyPhoto.js.download"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var rlArgs = {"script":"prettyphoto","selector":"lightbox","customEvents":"","activeGalleries":"1","animationSpeed":"normal","slideshow":"0","slideshowDelay":"5000","slideshowAutoplay":"0","opacity":"0.75","showTitle":"1","allowResize":"1","allowExpand":"1","width":"1080","height":"720","separator":"\/","theme":"pp_default","horizontalPadding":"20","hideFlash":"0","wmode":"opaque","videoAutoplay":"0","modal":"0","deeplinking":"0","overlayGallery":"1","keyboardShortcuts":"1","social":"0","woocommerce_gallery":"0"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/front.js.download"></script>
+<script type="text/javascript" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/stcr-plugin.js.download"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var wpp_params = {"sampling_active":"","sampling_rate":"100","ajax_url":"https:\/\/sqlperformance.com\/wp-admin\/admin-ajax.php","action":"update_views_ajax","ID":"4259","token":"810f216f82"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/wpp.js.download"></script>
+<link rel="https://api.w.org/" href="https://sqlperformance.com/wp-json/">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://sqlperformance.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://sqlperformance.com/wp-includes/wlwmanifest.xml"> 
+<link rel="shortlink" href="https://wp.me/p2DCUl-16H">
+<link rel="alternate" type="application/json+oembed" href="https://sqlperformance.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fsqlperformance.com%2F2013%2F06%2Ft-sql-queries%2Fmissing-index">
+<link rel="alternate" type="text/xml+oembed" href="https://sqlperformance.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fsqlperformance.com%2F2013%2F06%2Ft-sql-queries%2Fmissing-index&amp;format=xml">
+<style data-context="foundation-flickity-css">/*! Flickity v2.0.2
+http://flickity.metafizzy.co
+---------------------------------------------- */.flickity-enabled{position:relative}.flickity-enabled:focus{outline:0}.flickity-viewport{overflow:hidden;position:relative;height:100%}.flickity-slider{position:absolute;width:100%;height:100%}.flickity-enabled.is-draggable{-webkit-tap-highlight-color:transparent;tap-highlight-color:transparent;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.flickity-enabled.is-draggable .flickity-viewport{cursor:move;cursor:-webkit-grab;cursor:grab}.flickity-enabled.is-draggable .flickity-viewport.is-pointer-down{cursor:-webkit-grabbing;cursor:grabbing}.flickity-prev-next-button{position:absolute;top:50%;width:44px;height:44px;border:none;border-radius:50%;background:#fff;background:hsla(0,0%,100%,.75);cursor:pointer;-webkit-transform:translateY(-50%);transform:translateY(-50%)}.flickity-prev-next-button:hover{background:#fff}.flickity-prev-next-button:focus{outline:0;box-shadow:0 0 0 5px #09F}.flickity-prev-next-button:active{opacity:.6}.flickity-prev-next-button.previous{left:10px}.flickity-prev-next-button.next{right:10px}.flickity-rtl .flickity-prev-next-button.previous{left:auto;right:10px}.flickity-rtl .flickity-prev-next-button.next{right:auto;left:10px}.flickity-prev-next-button:disabled{opacity:.3;cursor:auto}.flickity-prev-next-button svg{position:absolute;left:20%;top:20%;width:60%;height:60%}.flickity-prev-next-button .arrow{fill:#333}.flickity-page-dots{position:absolute;width:100%;bottom:-25px;padding:0;margin:0;list-style:none;text-align:center;line-height:1}.flickity-rtl .flickity-page-dots{direction:rtl}.flickity-page-dots .dot{display:inline-block;width:10px;height:10px;margin:0 8px;background:#333;border-radius:50%;opacity:.25;cursor:pointer}.flickity-page-dots .dot.is-selected{opacity:1}</style>
+<link rel="dns-prefetch" href="https://v0.wordpress.com/">
+<style type="text/css">img#wpstats{display:none}</style><style>.ios7.web-app-mode.has-fixed header{ background-color: rgba(0,0,0,.88);}</style>			<style type="text/css" id="wp-custom-css">
+				@import  "https://fonts.googleapis.com/css?family=Open+Sans";
+@import  "https://fonts.googleapis.com/css?family=Montserrat";
+@import  "https://fonts.googleapis.com/css?family=Source+Code+Pro";
+@import  "https://fonts.googleapis.com/css?family=Noto+Sans";			</style>
+		<!--[if !IE]--><style> body { min-height:100vh!important; } </style><!--[endif]-->
+<link rel="stylesheet" href="./Don&#39;t just blindly create that missing index! SQLPerformance_files/wp-geshi.css">
+</head>
+<body class="post-template-default single single-post postid-4259 single-format-standard group-blog" waid71fa0d88-5390-4b5b-a2f4-e45fa93d85e2="SA password protect entry checker">
+  <div class="page-header">
+    <div class="top-left-logo">
+      <a href="https://sqlperformance.com/" title="Blog Home"><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/SQLPerf-logo.png" alt="SQLPerformance.com by SentryOne"></a>
+    </div>
+    <div class="top-right-logo">
+      <a href="https://sentryone.com/" title="SentryOne"><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/SentryOne.png" class="top-right-so"></a>
+      <div class="social"><nobr>
+        <a href="mailto:community@sentryone.com" title="Send mail to community@sentryone.com"><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/b-mail.png"></a><a target="_blank" href="https://twitter.com/SentryOne" title="twitter.com/SentryOne"><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/b-tw.png"></a><a target="_blank" href="https://www.linkedin.com/company/129912" title="SentryOne on LinkedIn"><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/b-li.png"></a><a target="_blank" href="https://www.facebook.com/SentryOne" title="SentryOne on Facebook"><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/b-fb.png"></a><a href="https://sqlperformance.com/feed" target="_blank" title="RSS Feed"><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/b-rss.png"></a></nobr>
+      </div>
+    </div>
+  </div>
+  <div class="navbar" style="padding-top:2px!important">
+    <form name="searchForm" action="https://sqlperformance.com/" onsubmit="return checkForm(&#39;f&#39;);">
+      <a class="headerlink" href="https://sqlperformance.com/" title="Home">Home</a>
+      <a class="headerlink" href="https://sqlperformance.com/archives" title="Monthly Archives">Archives</a>
+      <a class="headerlink" href="https://sqlperformance.com/authors" title="Authors">Authors</a>
+      <a class="headerlink" href="https://sqlperformance.com/categories" title="Categories">Categories</a>
+      <a class="headerlink" href="https://sqlperformance.com/about-sqlperformance" title="About SQLPerformance.com">About</a>
+      <a style="display:none" class="headerlink" href="https://sqlperformance.com/q-a-community" title="Q &amp; A Community
+Answers.SQLPerformance.com">Q &amp; A Community</a>
+      <a class="headerlink" href="javascript:void(0);" title="Search" style="padding-left:152px!important" onclick="checkForm(&#39;c&#39;);">GO</a>
+        <input type="search" placeholder="Search..." value="" name="s" class="navsearch">
+    </form>
+    <script>
+      function checkForm(arg)
+      {
+        if (document.searchForm.s.value.trim() != '') { 
+          if (arg=='f') { return true; } 
+          if (arg=='c') { location.href='/?s='+document.searchForm.s.value; }
+        }
+        return false;
+      }
+    </script>
+  </div>
+<style>.tileSidebar { margin-right:0px!important }</style>
+
+<div class="singlewrapper">
+      <article id="post-4259" class="single-post post-4259 post type-post status-publish format-standard hentry category-sql-indexes category-sql-plan category-t-sql-queries tag-missing-indexes">       
+  <div><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/abertrand.jpg" alt="Aaron Bertrand" title="Aaron Bertrand" style="float:left;width:43px;height:43px;border:1px solid #555;border-radius:5px;margin:2px 8px 0 0!important"><h1 class="entry-headline" style="display:inline-block">Don't just blindly create those "missing" indexes!</h1>
+    <div class="subline">
+      <nobr>June 6, 2013 by <a href="https://sqlperformance.com/author/abertrand" title="Posts by Aaron Bertrand" rel="author">Aaron Bertrand</a> in <a href="https://sqlperformance.com/category/sql-indexes" rel="category tag">SQL Indexes</a>, <a href="https://sqlperformance.com/category/sql-plan" rel="category tag">SQL Plan</a>, <a href="https://sqlperformance.com/category/t-sql-queries" rel="category tag">T-SQL Queries</a>       | <a href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index#comments">14 Comments</a>
+       </nobr>
+    </div>
+  </div>
+        <div class="tileSidebar" style="margin-top:-19px!important"><div class="featbox"><a target="_blank" href="https://www.sentryone.com/platform/windows-hyper-v-performance-monitoring?utm_source=sqlperformance&amp;utm_medium=banner&amp;utm_campaign=winsentry-sidebar" title="SentryOne : Win Sentry"><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/ad-winsentry.png" class="feat"></a>Auto-correlate and track performance for all of your Windows processes and services, right now or historically.&nbsp; <nobr><a class="featlink" target="_blank" href="https://www.sentryone.com/platform/windows-hyper-v-performance-monitoring?utm_source=sqlperformance&amp;utm_medium=banner&amp;utm_campaign=winsentry-sidebar" title="SentryOne : Win Sentry"><span class="txt">More</span> <b>→</b></a></nobr></div><div class="featbox"><b class="PromoHeadline">SentryOne Newsletters</b><p>The SQLPerformance.com bi-weekly newsletter keeps you up to speed on the most recent blog posts and forum discussions in the SQL Server community.</p><p>eNews is a bi-monthly newsletter with fun information about SentryOne, tips to help improve your productivity, and much more.</p><p style="text-align:right;margin:10px 0 4px 0"><a class="featlink" target="_blank" href="https://sentryone.com/community?utm_source=sqlperformance&amp;utm_medium=banner&amp;utm_campaign=subscribe-sidebar#newsletters"><span class="txt">Subscribe</span> <b>→</b></a></p></div><div class="featbox"><b class="PromoHeadline">Featured Author</b><p><a href="https://sqlperformance.com/author/paulwhitenzgmail-com"><img title="Author : Paul White" style="float:left" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/paulwhitenzgmail-com.jpg"></a>Paul White is an independent SQL Server consultant specializing in performance tuning, execution plans, and the query optimizer.</p><p style="text-align:right;margin:10px 0 4px 0"><a class="featlink" href="https://sqlperformance.com/author/paulwhitenzgmail-com"><span class="txt">Paul’s Posts</span> <b>→</b></a></p></div></div>
+    <div class="entry-content">	
+      <p>Kevin Kline (<a href="http://twitter.com/kekline" title="http://twitter.com/kekline" target="_blank">@kekline</a>) and I recently held a query tuning webinar (well, <a target="_blank" href="http://sqlsentry.tv/tag/query-tuning/">one in a series</a>, actually), and one of the things that came up is the tendency of folks to create any missing index that SQL Server tells them will be <em>a good thing™</em>. They can learn about these missing indexes from the <a href="http://msdn.microsoft.com/en-us/library/ms166575.aspx" title="Database Engine Tuning Advisor (DTA) on MSDN" target="_blank">Database Engine Tuning Advisor (DTA)</a>, the <a href="http://msdn.microsoft.com/en-us/library/ms345434.aspx" title="Missing index DMVs on MSDN" target="_blank">missing index DMVs</a>, or an execution plan displayed in Management Studio or <a href="https://sentryone.com/plan-explorer" title="Plan Explorer" target="_blank">Plan Explorer</a> (all of which just relay information from exactly the same place):</p>
+<p><a target="_blank" href="./Don&#39;t just blindly create that missing index! SQLPerformance_files/mi_1.png" data-rel="lightbox-0" title=""><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/mi_1.png" alt="Missing Index warning and context menu item" class="border indent shadow floatleft" style="width:15%;min-width:175px"></a></p>
+<p>The problem with just blindly creating this index is that SQL Server has decided that it is useful for a particular query (or handful of queries), but completely and unilaterally ignores the rest of the workload. As we all know, indexes are not "free" – you pay for indexes both in raw storage as well as maintenance required on DML operations. It makes little sense, in a write-heavy workload, to add an index that helps make a single query slightly more efficient, especially if that query is not run frequently. It can be very important in these cases to understand your overall workload and strike a good balance between making your queries efficient and not paying too much for that in terms of index maintenance.</p>
+<p><a target="_blank" href="./Don&#39;t just blindly create that missing index! SQLPerformance_files/mi_2.png" data-rel="lightbox-1" title=""><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/mi_2.png" alt="Missing Index warning and context menu item" class="border indent shadow" style="width:45%;min-width:350px"></a></p>
+<p>So an idea I had was to "mash up" information from the missing index DMVs, the index usage stats DMV, and information about query plans, to determine what type of balance currently exists and how adding the index might fare overall. </p>
+<h4>Missing indexes</h4>
+<p>First, we can take a look at the missing indexes that SQL Server currently suggests:</p>
+
+
+<div class="wp-geshi-highlight-wrap5"><div class="wp-geshi-highlight-wrap4"><div class="wp-geshi-highlight-wrap3"><div class="wp-geshi-highlight-wrap2"><div class="wp-geshi-highlight-wrap"><div class="wp-geshi-highlight"><div class="tsql"><pre class="de1"><span class="kw2">SELECT</span>
+  d<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span><span class="sy0">,</span>
+  s <span class="sy0">=</span> <span class="kw1">OBJECT_SCHEMA_NAME</span><span class="br0">(</span>d<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span><span class="br0">)</span><span class="sy0">,</span>
+  o <span class="sy0">=</span> <span class="kw1">OBJECT_NAME</span><span class="br0">(</span>d<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span><span class="br0">)</span><span class="sy0">,</span>
+  d<span class="sy0">.</span><span class="me1">equality_columns</span><span class="sy0">,</span>
+  d<span class="sy0">.</span><span class="me1">inequality_columns</span><span class="sy0">,</span>
+  d<span class="sy0">.</span><span class="me1">included_columns</span><span class="sy0">,</span>
+  s<span class="sy0">.</span><span class="me1">unique_compiles</span><span class="sy0">,</span>
+  s<span class="sy0">.</span><span class="me1">user_seeks</span><span class="sy0">,</span> s<span class="sy0">.</span><span class="me1">last_user_seek</span><span class="sy0">,</span>
+  s<span class="sy0">.</span><span class="me1">user_scans</span><span class="sy0">,</span> s<span class="sy0">.</span><span class="me1">last_user_scan</span>
+<span class="kw2">INTO</span> #candidates
+<span class="kw2">FROM</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">dm_db_missing_index_details</span> <span class="kw2">AS</span> d
+<span class="kw7">INNER</span> <span class="kw7">JOIN</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">dm_db_missing_index_groups</span> <span class="kw2">AS</span> g
+<span class="kw2">ON</span> d<span class="sy0">.</span><span class="me1">index_handle</span> <span class="sy0">=</span> g<span class="sy0">.</span><span class="me1">index_handle</span>
+<span class="kw7">INNER</span> <span class="kw7">JOIN</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">dm_db_missing_index_group_stats</span> <span class="kw2">AS</span> s
+<span class="kw2">ON</span> g<span class="sy0">.</span><span class="me1">index_group_handle</span> <span class="sy0">=</span> s<span class="sy0">.</span><span class="me1">group_handle</span>
+<span class="kw2">WHERE</span> d<span class="sy0">.</span><span class="me1">database_id</span> <span class="sy0">=</span> <span class="kw1">DB_ID</span><span class="br0">(</span><span class="br0">)</span>
+<span class="kw7">AND</span> <span class="kw1">OBJECTPROPERTY</span><span class="br0">(</span>d<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span><span class="sy0">,</span> <span class="st0">'IsMsShipped'</span><span class="br0">)</span> <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span></pre></div></div></div></div></div></div></div>
+
+
+<p>This shows the table(s) and column(s) that would have been useful in an index, how many compiles/seeks/scans would have been used, and when the last such event happened for each potential index. You can also include columns like <code>s.avg_total_user_cost</code> and <code>s.avg_user_impact</code> if you want to use those figures to prioritize.</p>
+<h4>Plan operations</h4>
+<p>Next, let's take a look at the operations used in all of the plans we have cached against the objects that have been identified by our missing indexes.</p>
+
+
+<div class="wp-geshi-highlight-wrap5"><div class="wp-geshi-highlight-wrap4"><div class="wp-geshi-highlight-wrap3"><div class="wp-geshi-highlight-wrap2"><div class="wp-geshi-highlight-wrap"><div class="wp-geshi-highlight"><div class="tsql"><pre class="de1"><span class="kw2">CREATE</span> <span class="kw2">TABLE</span> #planops
+<span class="br0">(</span>
+  o <span class="kw2">INT</span><span class="sy0">,</span> 
+  i <span class="kw2">INT</span><span class="sy0">,</span> 
+  h <span class="kw2">VARBINARY</span><span class="br0">(</span><span class="nu0">64</span><span class="br0">)</span><span class="sy0">,</span> 
+  uc <span class="kw2">INT</span><span class="sy0">,</span>
+  Scan_Ops   <span class="kw2">INT</span><span class="sy0">,</span> 
+  Seek_Ops   <span class="kw2">INT</span><span class="sy0">,</span> 
+  Update_Ops <span class="kw2">INT</span>
+<span class="br0">)</span><span class="sy0">;</span>
+&nbsp;
+<span class="kw2">DECLARE</span><span class="re0"> @sql</span> <span class="kw2">NVARCHAR</span><span class="br0">(</span><span class="kw1">MAX</span><span class="br0">)</span> <span class="sy0">=</span> <span class="st_h">N''</span><span class="sy0">;</span>
+&nbsp;
+<span class="kw2">SELECT</span><span class="re0"> @sql</span> <span class="sy0">+=</span> <span class="st_h">N'
+    UNION ALL SELECT o,i,h,uc,Scan_Ops,Seek_Ops,Update_Ops
+    FROM
+    (
+      SELECT o = '</span> <span class="sy0">+</span> <span class="kw1">RTRIM</span><span class="br0">(</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span><span class="br0">)</span> <span class="sy0">+</span> <span class="st0">', 
+             i = '</span> <span class="sy0">+</span> <span class="kw1">RTRIM</span><span class="br0">(</span>index_id<span class="br0">)</span> <span class="sy0">+</span><span class="st0">',
+             h = pl.plan_handle,
+             uc = pl.usecounts, 
+	     Scan_Ops = p.query_plan.value('</span><span class="st0">'count(//RelOp<span class="es0">[@</span>LogicalOp = '</span><span class="st0">''</span><span class="st0">'Index Scan'</span><span class="st0">''</span><span class="st0">''</span>
+               <span class="sy0">+</span> <span class="st0">' or @LogicalOp = '</span><span class="st0">''</span><span class="st0">'Clustered Index Scan'</span><span class="st0">''</span><span class="st0">']/*/'</span>
+               <span class="sy0">+</span> <span class="st0">'Object<span class="es0">[@</span>Index='</span><span class="st0">''</span><span class="st0">''</span> <span class="sy0">+</span> <span class="kw1">QUOTENAME</span><span class="br0">(</span>name<span class="br0">)</span> <span class="sy0">+</span> <span class="st0">''</span><span class="st0">''</span><span class="st0">'])'</span><span class="st0">', '</span><span class="st0">'int'</span><span class="st0">'),
+	     Seek_Ops = p.query_plan.value('</span><span class="st0">'count(//RelOp<span class="es0">[@</span>LogicalOp = '</span><span class="st0">''</span><span class="st0">'Index Seek'</span><span class="st0">''</span><span class="st0">''</span>
+               <span class="sy0">+</span> <span class="st0">' or @LogicalOp = '</span><span class="st0">''</span><span class="st0">'Clustered Index Seek'</span><span class="st0">''</span><span class="st0">']/*/'</span>
+               <span class="sy0">+</span> <span class="st0">'Object<span class="es0">[@</span>Index='</span><span class="st0">''</span><span class="st0">''</span> <span class="sy0">+</span> <span class="kw1">QUOTENAME</span><span class="br0">(</span>name<span class="br0">)</span> <span class="sy0">+</span> <span class="st0">''</span><span class="st0">''</span><span class="st0">'])'</span><span class="st0">', '</span><span class="st0">'int'</span><span class="st0">'),
+             Update_Ops = p.query_plan.value('</span><span class="st0">'count(//Update/Object<span class="es0">[@</span>Index='</span><span class="st0">''</span><span class="st0">''</span> 
+               <span class="sy0">+</span> <span class="kw1">QUOTENAME</span><span class="br0">(</span>name<span class="br0">)</span> <span class="sy0">+</span> <span class="st0">''</span><span class="st0">''</span><span class="st0">'])'</span><span class="st0">', '</span><span class="st0">'int'</span><span class="st0">')
+      FROM sys.dm_exec_cached_plans AS pl
+      CROSS APPLY sys.dm_exec_query_plan(pl.plan_handle) AS p
+      WHERE p.dbid = DB_ID()
+      AND p.query_plan IS NOT NULL
+    ) AS x 
+    WHERE Scan_Ops + Seek_Ops + Update_Ops &gt; 0'</span> 
+  <span class="kw2">FROM</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">indexes</span> <span class="kw2">AS</span> i
+  <span class="kw2">WHERE</span> i<span class="sy0">.</span><span class="me1">index_id</span> <span class="sy0">&gt;</span> <span class="nu0">0</span>
+  <span class="kw7">AND</span> <span class="kw7">EXISTS</span> <span class="br0">(</span><span class="kw2">SELECT</span> <span class="nu0">1</span> <span class="kw2">FROM</span> #candidates <span class="kw2">WHERE</span> <span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span> <span class="sy0">=</span> i<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span><span class="br0">)</span><span class="sy0">;</span>
+&nbsp;
+<span class="kw2">SET</span><span class="re0"> @sql</span> <span class="sy0">=</span> <span class="st0">';WITH xmlnamespaces (DEFAULT '</span>
+    <span class="sy0">+</span> <span class="st0">'N'</span><span class="st0">'http://schemas.microsoft.com/sqlserver/2004/07/showplan'</span><span class="st0">')
+    '</span> <span class="sy0">+</span> <span class="kw1">STUFF</span><span class="re0"><span class="br0">(</span>@sql</span><span class="sy0">,</span> <span class="nu0">1</span><span class="sy0">,</span> <span class="nu0">16</span><span class="sy0">,</span> <span class="st0">''</span><span class="br0">)</span><span class="sy0">;</span>
+&nbsp;
+<span class="kw2">INSERT</span> #planops <span class="kw2">EXEC</span> <span class="kw3">sp_executesql</span><span class="re0"> @sql</span><span class="sy0">;</span></pre></div></div></div></div></div></div></div>
+
+
+<p>A friend over on dba.SE, <a href="http://dba.stackexchange.com/users/2103/mikael-eriksson" title="http://dba.stackexchange.com/users/2103/mikael-eriksson" target="_blank">Mikael Eriksson</a>, suggested the following two queries which, on a larger system, will perform much better than the XML / UNION query I cobbled together above, so you could experiment with those first. His ending comment was that he "not surprisingly found out that less XML is a good thing for performance. :)" Indeed.</p>
+
+
+<div class="wp-geshi-highlight-wrap5"><div class="wp-geshi-highlight-wrap4"><div class="wp-geshi-highlight-wrap3"><div class="wp-geshi-highlight-wrap2"><div class="wp-geshi-highlight-wrap"><div class="wp-geshi-highlight"><div class="tsql"><pre class="de1"><span class="co1">-- alternative #1</span>
+&nbsp;
+<span class="kw2">with</span> xmlnamespaces <span class="br0">(</span><span class="kw2">default</span> <span class="st0">'http://schemas.microsoft.com/sqlserver/2004/07/showplan'</span><span class="br0">)</span>
+<span class="kw2">insert</span> #planops
+<span class="kw2">select</span> o<span class="sy0">,</span>i<span class="sy0">,</span>h<span class="sy0">,</span>uc<span class="sy0">,</span>Scan_Ops<span class="sy0">,</span>Seek_Ops<span class="sy0">,</span>Update_Ops
+<span class="kw2">from</span> 
+<span class="br0">(</span>
+  <span class="kw2">select</span> o <span class="sy0">=</span> i<span class="sy0">.</span><span class="me1">object_id</span><span class="sy0">,</span>
+     i <span class="sy0">=</span> i<span class="sy0">.</span><span class="me1">index_id</span><span class="sy0">,</span>
+     h <span class="sy0">=</span> pl<span class="sy0">.</span><span class="me1">plan_handle</span><span class="sy0">,</span>
+     uc <span class="sy0">=</span> pl<span class="sy0">.</span><span class="me1">usecounts</span><span class="sy0">,</span>
+       Scan_Ops <span class="sy0">=</span> p<span class="sy0">.</span><span class="me1">query_plan</span><span class="sy0">.</span><span class="me1">value</span><span class="br0">(</span><span class="st0">'count(//RelOp<span class="es0">[@</span>LogicalOp 
+	     = ("Index Scan", "Clustered Index Scan")]/*/Object<span class="es0">[@</span>Index = sql:column("i2.name")])'</span><span class="sy0">,</span> <span class="st0">'int'</span><span class="br0">)</span><span class="sy0">,</span>
+       Seek_Ops <span class="sy0">=</span> p<span class="sy0">.</span><span class="me1">query_plan</span><span class="sy0">.</span><span class="me1">value</span><span class="br0">(</span><span class="st0">'count(//RelOp<span class="es0">[@</span>LogicalOp 
+	     = ("Index Seek", "Clustered Index Seek")]/*/Object<span class="es0">[@</span>Index = sql:column("i2.name")])'</span><span class="sy0">,</span> <span class="st0">'int'</span><span class="br0">)</span><span class="sy0">,</span>
+     Update_Ops <span class="sy0">=</span> p<span class="sy0">.</span><span class="me1">query_plan</span><span class="sy0">.</span><span class="me1">value</span><span class="br0">(</span><span class="st0">'count(//Update/Object<span class="es0">[@</span>Index = sql:column("i2.name")])'</span><span class="sy0">,</span> <span class="st0">'int'</span><span class="br0">)</span>
+  <span class="kw2">from</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">indexes</span> <span class="kw2">as</span> i
+    <span class="kw7">cross</span> <span class="kw7">apply</span> <span class="br0">(</span><span class="kw2">select</span> <span class="kw1">quotename</span><span class="br0">(</span>i<span class="sy0">.</span><span class="me1">name</span><span class="br0">)</span> <span class="kw2">as</span> name<span class="br0">)</span> <span class="kw2">as</span> i2
+    <span class="kw7">cross</span> <span class="kw7">apply</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">dm_exec_cached_plans</span> <span class="kw2">as</span> pl
+    <span class="kw7">cross</span> <span class="kw7">apply</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">dm_exec_query_plan</span><span class="br0">(</span>pl<span class="sy0">.</span><span class="me1">plan_handle</span><span class="br0">)</span> <span class="kw2">AS</span> p
+  <span class="kw2">where</span> <span class="kw7">exists</span> <span class="br0">(</span><span class="kw2">select</span> <span class="nu0">1</span> <span class="kw2">from</span> #candidates <span class="kw2">as</span> c <span class="kw2">where</span> c<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span> <span class="sy0">=</span> i<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span><span class="br0">)</span> 
+    <span class="kw7">and</span> p<span class="sy0">.</span><span class="me1">query_plan</span><span class="sy0">.</span><span class="me1">exist</span><span class="br0">(</span><span class="st0">'//Object<span class="es0">[@</span>Index = sql:column("i2.name")]'</span><span class="br0">)</span> <span class="sy0">=</span> <span class="nu0">1</span> 
+	<span class="kw7">and</span> p<span class="sy0">.</span><span class="re1"><span class="br0">[</span>dbid<span class="br0">]</span></span> <span class="sy0">=</span> <span class="kw1">db_id</span><span class="br0">(</span><span class="br0">)</span>
+	<span class="kw7">and</span> i<span class="sy0">.</span><span class="me1">index_id</span> <span class="sy0">&gt;</span> <span class="nu0">0</span>
+    <span class="br0">)</span> <span class="kw2">as</span> T
+<span class="kw2">where</span> Scan_Ops <span class="sy0">+</span> Seek_Ops <span class="sy0">+</span> Update_Ops <span class="sy0">&gt;</span> <span class="nu0">0</span><span class="sy0">;</span>
+&nbsp;
+<span class="co1">-- alternative #2</span>
+&nbsp;
+<span class="kw2">with</span> xmlnamespaces <span class="br0">(</span><span class="kw2">default</span> <span class="st0">'http://schemas.microsoft.com/sqlserver/2004/07/showplan'</span><span class="br0">)</span>
+<span class="kw2">insert</span> #planops
+<span class="kw2">select</span> o <span class="sy0">=</span> <span class="kw1">coalesce</span><span class="br0">(</span>T1<span class="sy0">.</span><span class="me1">o</span><span class="sy0">,</span> T2<span class="sy0">.</span><span class="me1">o</span><span class="br0">)</span><span class="sy0">,</span>
+   i <span class="sy0">=</span> <span class="kw1">coalesce</span><span class="br0">(</span>T1<span class="sy0">.</span><span class="me1">i</span><span class="sy0">,</span> T2<span class="sy0">.</span><span class="me1">i</span><span class="br0">)</span><span class="sy0">,</span>
+   h <span class="sy0">=</span> <span class="kw1">coalesce</span><span class="br0">(</span>T1<span class="sy0">.</span><span class="me1">h</span><span class="sy0">,</span> T2<span class="sy0">.</span><span class="me1">h</span><span class="br0">)</span><span class="sy0">,</span>
+   uc <span class="sy0">=</span> <span class="kw1">coalesce</span><span class="br0">(</span>T1<span class="sy0">.</span><span class="me1">uc</span><span class="sy0">,</span> T2<span class="sy0">.</span><span class="me1">uc</span><span class="br0">)</span><span class="sy0">,</span>
+   Scan_Ops <span class="sy0">=</span> <span class="kw1">isnull</span><span class="br0">(</span>T1<span class="sy0">.</span><span class="me1">Scan_Ops</span><span class="sy0">,</span> <span class="nu0">0</span><span class="br0">)</span><span class="sy0">,</span>
+   Seek_Ops <span class="sy0">=</span> <span class="kw1">isnull</span><span class="br0">(</span>T1<span class="sy0">.</span><span class="me1">Seek_Ops</span><span class="sy0">,</span> <span class="nu0">0</span><span class="br0">)</span><span class="sy0">,</span>
+   Update_Ops <span class="sy0">=</span> <span class="kw1">isnull</span><span class="br0">(</span>T2<span class="sy0">.</span><span class="me1">Update_Ops</span><span class="sy0">,</span> <span class="nu0">0</span><span class="br0">)</span>
+<span class="kw2">from</span>
+  <span class="br0">(</span>
+  <span class="kw2">select</span> o <span class="sy0">=</span> i<span class="sy0">.</span><span class="me1">object_id</span><span class="sy0">,</span>
+     i <span class="sy0">=</span> i<span class="sy0">.</span><span class="me1">index_id</span><span class="sy0">,</span>
+     h <span class="sy0">=</span> t<span class="sy0">.</span><span class="me1">plan_handle</span><span class="sy0">,</span>
+     uc <span class="sy0">=</span> t<span class="sy0">.</span><span class="me1">usecounts</span><span class="sy0">,</span>
+     Scan_Ops <span class="sy0">=</span> <span class="kw1">sum</span><span class="br0">(</span><span class="kw2">case</span> <span class="kw2">when</span> t<span class="sy0">.</span><span class="me1">LogicalOp</span> <span class="kw7">in</span> <span class="br0">(</span><span class="st0">'Index Scan'</span><span class="sy0">,</span> <span class="st0">'Clustered Index Scan'</span><span class="br0">)</span> <span class="kw2">then</span> <span class="nu0">1</span> <span class="kw2">else</span> <span class="nu0">0</span> <span class="kw2">end</span><span class="br0">)</span><span class="sy0">,</span>
+     Seek_Ops <span class="sy0">=</span> <span class="kw1">sum</span><span class="br0">(</span><span class="kw2">case</span> <span class="kw2">when</span> t<span class="sy0">.</span><span class="me1">LogicalOp</span> <span class="kw7">in</span> <span class="br0">(</span><span class="st0">'Index Seek'</span><span class="sy0">,</span> <span class="st0">'Clustered Index Seek'</span><span class="br0">)</span> <span class="kw2">then</span> <span class="nu0">1</span> <span class="kw2">else</span> <span class="nu0">0</span> <span class="kw2">end</span><span class="br0">)</span>
+  <span class="kw2">from</span> <span class="br0">(</span>
+     <span class="kw2">select</span> 
+       r<span class="sy0">.</span><span class="me1">n</span><span class="sy0">.</span><span class="me1">value</span><span class="br0">(</span><span class="st0">'@LogicalOp'</span><span class="sy0">,</span> <span class="st0">'varchar(100)'</span><span class="br0">)</span> <span class="kw2">as</span> LogicalOp<span class="sy0">,</span>
+       o<span class="sy0">.</span><span class="me1">n</span><span class="sy0">.</span><span class="me1">value</span><span class="br0">(</span><span class="st0">'@Index'</span><span class="sy0">,</span> <span class="st0">'sysname'</span><span class="br0">)</span> <span class="kw2">as</span> IndexName<span class="sy0">,</span>
+       pl<span class="sy0">.</span><span class="me1">plan_handle</span><span class="sy0">,</span>
+       pl<span class="sy0">.</span><span class="me1">usecounts</span>
+     <span class="kw2">from</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">dm_exec_cached_plans</span> <span class="kw2">as</span> pl
+       <span class="kw7">cross</span> <span class="kw7">apply</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">dm_exec_query_plan</span><span class="br0">(</span>pl<span class="sy0">.</span><span class="me1">plan_handle</span><span class="br0">)</span> <span class="kw2">AS</span> p
+       <span class="kw7">cross</span> <span class="kw7">apply</span> p<span class="sy0">.</span><span class="me1">query_plan</span><span class="sy0">.</span><span class="me1">nodes</span><span class="br0">(</span><span class="st0">'//RelOp'</span><span class="br0">)</span> <span class="kw2">as</span> r<span class="br0">(</span>n<span class="br0">)</span>
+       <span class="kw7">cross</span> <span class="kw7">apply</span> r<span class="sy0">.</span><span class="me1">n</span><span class="sy0">.</span><span class="me1">nodes</span><span class="br0">(</span><span class="st0">'*/Object'</span><span class="br0">)</span> <span class="kw2">as</span> o<span class="br0">(</span>n<span class="br0">)</span>
+     <span class="kw2">where</span> p<span class="sy0">.</span><span class="me1">dbid</span> <span class="sy0">=</span> <span class="kw1">db_id</span><span class="br0">(</span><span class="br0">)</span>
+     <span class="kw7">and</span> p<span class="sy0">.</span><span class="me1">query_plan</span> <span class="kw2">is</span> <span class="kw7">not</span> <span class="kw7">null</span>
+   <span class="br0">)</span> <span class="kw2">as</span> t
+  <span class="kw7">inner</span> <span class="kw7">join</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">indexes</span> <span class="kw2">as</span> i
+    <span class="kw2">on</span> t<span class="sy0">.</span><span class="me1">IndexName</span> <span class="sy0">=</span> <span class="kw1">quotename</span><span class="br0">(</span>i<span class="sy0">.</span><span class="me1">name</span><span class="br0">)</span>
+  <span class="kw2">where</span> t<span class="sy0">.</span><span class="me1">LogicalOp</span> <span class="kw7">in</span> <span class="br0">(</span><span class="st0">'Index Scan'</span><span class="sy0">,</span> <span class="st0">'Clustered Index Scan'</span><span class="sy0">,</span> <span class="st0">'Index Seek'</span><span class="sy0">,</span> <span class="st0">'Clustered Index Seek'</span><span class="br0">)</span> 
+  <span class="kw7">and</span> <span class="kw7">exists</span> <span class="br0">(</span><span class="kw2">select</span> <span class="nu0">1</span> <span class="kw2">from</span> #candidates <span class="kw2">as</span> c <span class="kw2">where</span> c<span class="sy0">.</span><span class="me1">object_id</span> <span class="sy0">=</span> i<span class="sy0">.</span><span class="me1">object_id</span><span class="br0">)</span>
+  <span class="kw2">group</span> <span class="kw2">by</span> i<span class="sy0">.</span><span class="me1">object_id</span><span class="sy0">,</span>
+       i<span class="sy0">.</span><span class="me1">index_id</span><span class="sy0">,</span>
+       t<span class="sy0">.</span><span class="me1">plan_handle</span><span class="sy0">,</span>
+       t<span class="sy0">.</span><span class="me1">usecounts</span>
+  <span class="br0">)</span> <span class="kw2">as</span> T1
+<span class="kw7">full</span> <span class="kw7">outer</span> <span class="kw7">join</span>
+  <span class="br0">(</span>
+  <span class="kw2">select</span> o <span class="sy0">=</span> i<span class="sy0">.</span><span class="me1">object_id</span><span class="sy0">,</span>
+      i <span class="sy0">=</span> i<span class="sy0">.</span><span class="me1">index_id</span><span class="sy0">,</span>
+      h <span class="sy0">=</span> t<span class="sy0">.</span><span class="me1">plan_handle</span><span class="sy0">,</span>
+      uc <span class="sy0">=</span> t<span class="sy0">.</span><span class="me1">usecounts</span><span class="sy0">,</span>
+      Update_Ops <span class="sy0">=</span> <span class="kw1">count</span><span class="br0">(</span><span class="sy0">*</span><span class="br0">)</span>
+  <span class="kw2">from</span> <span class="br0">(</span>
+      <span class="kw2">select</span> 
+    o<span class="sy0">.</span><span class="me1">n</span><span class="sy0">.</span><span class="me1">value</span><span class="br0">(</span><span class="st0">'@Index'</span><span class="sy0">,</span> <span class="st0">'sysname'</span><span class="br0">)</span> <span class="kw2">as</span> IndexName<span class="sy0">,</span>
+    pl<span class="sy0">.</span><span class="me1">plan_handle</span><span class="sy0">,</span>
+    pl<span class="sy0">.</span><span class="me1">usecounts</span>
+      <span class="kw2">from</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">dm_exec_cached_plans</span> <span class="kw2">as</span> pl
+    <span class="kw7">cross</span> <span class="kw7">apply</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">dm_exec_query_plan</span><span class="br0">(</span>pl<span class="sy0">.</span><span class="me1">plan_handle</span><span class="br0">)</span> <span class="kw2">AS</span> p
+    <span class="kw7">cross</span> <span class="kw7">apply</span> p<span class="sy0">.</span><span class="me1">query_plan</span><span class="sy0">.</span><span class="me1">nodes</span><span class="br0">(</span><span class="st0">'//Update'</span><span class="br0">)</span> <span class="kw2">as</span> r<span class="br0">(</span>n<span class="br0">)</span>
+    <span class="kw7">cross</span> <span class="kw7">apply</span> r<span class="sy0">.</span><span class="me1">n</span><span class="sy0">.</span><span class="me1">nodes</span><span class="br0">(</span><span class="st0">'Object'</span><span class="br0">)</span> <span class="kw2">as</span> o<span class="br0">(</span>n<span class="br0">)</span>
+      <span class="kw2">where</span> p<span class="sy0">.</span><span class="me1">dbid</span> <span class="sy0">=</span> <span class="kw1">db_id</span><span class="br0">(</span><span class="br0">)</span>
+      <span class="kw7">and</span> p<span class="sy0">.</span><span class="me1">query_plan</span> <span class="kw2">is</span> <span class="kw7">not</span> <span class="kw7">null</span>
+    <span class="br0">)</span> <span class="kw2">as</span> t
+  <span class="kw7">inner</span> <span class="kw7">join</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">indexes</span> <span class="kw2">as</span> i
+    <span class="kw2">on</span> t<span class="sy0">.</span><span class="me1">IndexName</span> <span class="sy0">=</span> <span class="kw1">quotename</span><span class="br0">(</span>i<span class="sy0">.</span><span class="me1">name</span><span class="br0">)</span>
+  <span class="kw2">where</span> <span class="kw7">exists</span> 
+  <span class="br0">(</span>
+    <span class="kw2">select</span> <span class="nu0">1</span> <span class="kw2">from</span> #candidates <span class="kw2">as</span> c <span class="kw2">where</span> c<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span> <span class="sy0">=</span> i<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span>
+  <span class="br0">)</span>
+  <span class="kw7">and</span> i<span class="sy0">.</span><span class="me1">index_id</span> <span class="sy0">&gt;</span> <span class="nu0">0</span>
+  <span class="kw2">group</span> <span class="kw2">by</span> i<span class="sy0">.</span><span class="me1">object_id</span><span class="sy0">,</span>
+    i<span class="sy0">.</span><span class="me1">index_id</span><span class="sy0">,</span>
+    t<span class="sy0">.</span><span class="me1">plan_handle</span><span class="sy0">,</span>
+    t<span class="sy0">.</span><span class="me1">usecounts</span>
+  <span class="br0">)</span> <span class="kw2">as</span> T2
+<span class="kw2">on</span> T1<span class="sy0">.</span><span class="me1">o</span> <span class="sy0">=</span> T2<span class="sy0">.</span><span class="me1">o</span> <span class="kw7">and</span>
+   T1<span class="sy0">.</span><span class="me1">i</span> <span class="sy0">=</span> T2<span class="sy0">.</span><span class="me1">i</span> <span class="kw7">and</span>
+   T1<span class="sy0">.</span><span class="me1">h</span> <span class="sy0">=</span> T2<span class="sy0">.</span><span class="me1">h</span> <span class="kw7">and</span>
+   T1<span class="sy0">.</span><span class="me1">uc</span> <span class="sy0">=</span> T2<span class="sy0">.</span><span class="me1">uc</span><span class="sy0">;</span></pre></div></div></div></div></div></div></div>
+
+
+<p>Now in the <code>#planops</code> table you have a bunch of values for <code>plan_handle</code> so that you can go and investigate each of the individual plans in play against the objects that have been identified as lacking some useful index. We're not going to use it for that right now, but you can easily cross-reference this with:</p>
+
+
+<div class="wp-geshi-highlight-wrap5"><div class="wp-geshi-highlight-wrap4"><div class="wp-geshi-highlight-wrap3"><div class="wp-geshi-highlight-wrap2"><div class="wp-geshi-highlight-wrap"><div class="wp-geshi-highlight"><div class="tsql"><pre class="de1"><span class="kw2">SELECT</span> 
+  <span class="kw1">OBJECT_SCHEMA_NAME</span><span class="br0">(</span>po<span class="sy0">.</span><span class="me1">o</span><span class="br0">)</span><span class="sy0">,</span>
+  <span class="kw1">OBJECT_NAME</span><span class="br0">(</span>po<span class="sy0">.</span><span class="me1">o</span><span class="br0">)</span><span class="sy0">,</span>
+  po<span class="sy0">.</span><span class="me1">uc</span><span class="sy0">,</span>po<span class="sy0">.</span><span class="me1">Scan_Ops</span><span class="sy0">,</span>po<span class="sy0">.</span><span class="me1">Seek_Ops</span><span class="sy0">,</span>po<span class="sy0">.</span><span class="me1">Update_Ops</span><span class="sy0">,</span>
+  p<span class="sy0">.</span><span class="me1">query_plan</span> 
+<span class="kw2">FROM</span> #planops <span class="kw2">AS</span> po
+<span class="kw7">CROSS</span> <span class="kw7">APPLY</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">dm_exec_query_plan</span><span class="br0">(</span>po<span class="sy0">.</span><span class="me1">h</span><span class="br0">)</span> <span class="kw2">AS</span> p<span class="sy0">;</span></pre></div></div></div></div></div></div></div>
+
+
+<p>Now you can click on any of the output plans to see what they're currently doing against your objects. Note that some of the plans will be repeated, since a plan can have multiple operators that reference different indexes on the same table.</p>
+<h4>Index usage stats</h4>
+<p>Next, let's take a look at index usage stats, so we can see how much actual activity is currently running against our candidate tables (and, particularly, updates).</p>
+
+
+<div class="wp-geshi-highlight-wrap5"><div class="wp-geshi-highlight-wrap4"><div class="wp-geshi-highlight-wrap3"><div class="wp-geshi-highlight-wrap2"><div class="wp-geshi-highlight-wrap"><div class="wp-geshi-highlight"><div class="tsql"><pre class="de1"><span class="kw2">SELECT</span> <span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span><span class="sy0">,</span> index_id<span class="sy0">,</span> user_seeks<span class="sy0">,</span> user_scans<span class="sy0">,</span> user_lookups<span class="sy0">,</span> user_updates 
+<span class="kw2">INTO</span> #indexusage
+<span class="kw2">FROM</span> <span class="kw4">sys</span><span class="sy0">.</span><span class="kw4">dm_db_index_usage_stats</span> <span class="kw2">AS</span> s
+<span class="kw2">WHERE</span> database_id <span class="sy0">=</span> <span class="kw1">DB_ID</span><span class="br0">(</span><span class="br0">)</span>
+<span class="kw7">AND</span> <span class="kw7">EXISTS</span> <span class="br0">(</span><span class="kw2">SELECT</span> <span class="nu0">1</span> <span class="kw2">FROM</span> #candidates <span class="kw2">WHERE</span> <span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span> <span class="sy0">=</span> s<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span><span class="br0">)</span><span class="sy0">;</span></pre></div></div></div></div></div></div></div>
+
+
+<p>Don't be alaramed if very few or no plans in the cache show updates for a particular index, even though the index usage stats show that those indexes have been updated. This just means that the update plans aren't currently in cache, which could be for a variety of reasons – for example, it could be a very read-heavy workload and they've been aged out, or they're all single-use and <code>optimize for ad hoc workloads</code> is enabled.</p>
+<h4>Putting it all together</h4>
+<p>The following query will show you, for each suggested missing index, the number of reads an index might have assisted, the number of writes and reads that have currently been captured against the existing indexes, the ratio of those, the number of plans associated with that object, and the total number of use counts for those plans:</p>
+
+
+<div class="wp-geshi-highlight-wrap5"><div class="wp-geshi-highlight-wrap4"><div class="wp-geshi-highlight-wrap3"><div class="wp-geshi-highlight-wrap2"><div class="wp-geshi-highlight-wrap"><div class="wp-geshi-highlight"><div class="tsql"><pre class="de1"><span class="sy0">;</span><span class="kw2">WITH</span> x <span class="kw2">AS</span> 
+<span class="br0">(</span>
+  <span class="kw2">SELECT</span> 
+    c<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span><span class="sy0">,</span>
+    potential_read_ops <span class="sy0">=</span> <span class="kw1">SUM</span><span class="br0">(</span>c<span class="sy0">.</span><span class="me1">user_seeks</span> <span class="sy0">+</span> c<span class="sy0">.</span><span class="me1">user_scans</span><span class="br0">)</span><span class="sy0">,</span>
+    <span class="re1"><span class="br0">[</span>write_ops<span class="br0">]</span></span> <span class="sy0">=</span> <span class="kw1">SUM</span><span class="br0">(</span>iu<span class="sy0">.</span><span class="me1">user_updates</span><span class="br0">)</span><span class="sy0">,</span>
+    <span class="re1"><span class="br0">[</span>read_ops<span class="br0">]</span></span> <span class="sy0">=</span> <span class="kw1">SUM</span><span class="br0">(</span>iu<span class="sy0">.</span><span class="me1">user_scans</span> <span class="sy0">+</span> iu<span class="sy0">.</span><span class="me1">user_seeks</span> <span class="sy0">+</span> iu<span class="sy0">.</span><span class="me1">user_lookups</span><span class="br0">)</span><span class="sy0">,</span> 
+    <span class="br0">[</span>write:<span class="kw2">read</span> ratio<span class="br0">]</span> <span class="sy0">=</span> <span class="kw1">CONVERT</span><span class="br0">(</span><span class="kw2">DECIMAL</span><span class="br0">(</span><span class="nu0">18</span><span class="sy0">,</span><span class="nu0">2</span><span class="br0">)</span><span class="sy0">,</span> <span class="kw1">SUM</span><span class="br0">(</span>iu<span class="sy0">.</span><span class="me1">user_updates</span><span class="br0">)</span><span class="sy0">*</span><span class="nu0">1.0</span> <span class="sy0">/</span> 
+      <span class="kw1">SUM</span><span class="br0">(</span>iu<span class="sy0">.</span><span class="me1">user_scans</span> <span class="sy0">+</span> iu<span class="sy0">.</span><span class="me1">user_seeks</span> <span class="sy0">+</span> iu<span class="sy0">.</span><span class="me1">user_lookups</span><span class="br0">)</span><span class="br0">)</span><span class="sy0">,</span> 
+    current_plan_count <span class="sy0">=</span> po<span class="sy0">.</span><span class="me1">h</span><span class="sy0">,</span>
+    current_plan_use_count <span class="sy0">=</span> po<span class="sy0">.</span><span class="me1">uc</span>
+  <span class="kw2">FROM</span> 
+    #candidates <span class="kw2">AS</span> c
+  <span class="kw1">LEFT</span> <span class="kw7">OUTER</span> <span class="kw7">JOIN</span> 
+    #indexusage <span class="kw2">AS</span> iu
+    <span class="kw2">ON</span> c<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span> <span class="sy0">=</span> iu<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span>
+  <span class="kw1">LEFT</span> <span class="kw7">OUTER</span> <span class="kw7">JOIN</span>
+  <span class="br0">(</span>
+    <span class="kw2">SELECT</span> o<span class="sy0">,</span> h <span class="sy0">=</span> <span class="kw1">COUNT</span><span class="br0">(</span>h<span class="br0">)</span><span class="sy0">,</span> uc <span class="sy0">=</span> <span class="kw1">SUM</span><span class="br0">(</span>uc<span class="br0">)</span>
+      <span class="kw2">FROM</span> #planops <span class="kw2">GROUP</span> <span class="kw2">BY</span> o
+  <span class="br0">)</span> <span class="kw2">AS</span> po
+    <span class="kw2">ON</span> c<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span> <span class="sy0">=</span> po<span class="sy0">.</span><span class="me1">o</span>
+  <span class="kw2">GROUP</span> <span class="kw2">BY</span> c<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span><span class="sy0">,</span> po<span class="sy0">.</span><span class="me1">h</span><span class="sy0">,</span> po<span class="sy0">.</span><span class="me1">uc</span>
+<span class="br0">)</span>
+<span class="kw2">SELECT</span> <span class="re1"><span class="br0">[</span>object<span class="br0">]</span></span> <span class="sy0">=</span> <span class="kw1">QUOTENAME</span><span class="br0">(</span>c<span class="sy0">.</span><span class="me1">s</span><span class="br0">)</span> <span class="sy0">+</span> <span class="st0">'.'</span> <span class="sy0">+</span> <span class="kw1">QUOTENAME</span><span class="br0">(</span>c<span class="sy0">.</span><span class="me1">o</span><span class="br0">)</span><span class="sy0">,</span>
+  c<span class="sy0">.</span><span class="me1">equality_columns</span><span class="sy0">,</span>
+  c<span class="sy0">.</span><span class="me1">inequality_columns</span><span class="sy0">,</span>
+  c<span class="sy0">.</span><span class="me1">included_columns</span><span class="sy0">,</span>
+  x<span class="sy0">.</span><span class="me1">potential_read_ops</span><span class="sy0">,</span>
+  x<span class="sy0">.</span><span class="me1">write_ops</span><span class="sy0">,</span>
+  x<span class="sy0">.</span><span class="me1">read_ops</span><span class="sy0">,</span>
+  x<span class="sy0">.</span><span class="br0">[</span>write:<span class="kw2">read</span> ratio<span class="br0">]</span><span class="sy0">,</span>
+  x<span class="sy0">.</span><span class="me1">current_plan_count</span><span class="sy0">,</span>
+  x<span class="sy0">.</span><span class="me1">current_plan_use_count</span>
+<span class="kw2">FROM</span> #candidates <span class="kw2">AS</span> c
+<span class="kw7">INNER</span> <span class="kw7">JOIN</span> x 
+<span class="kw2">ON</span> c<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span> <span class="sy0">=</span> x<span class="sy0">.</span><span class="re1"><span class="br0">[</span>object_id<span class="br0">]</span></span>
+<span class="kw2">ORDER</span> <span class="kw2">BY</span> x<span class="sy0">.</span><span class="br0">[</span>write:<span class="kw2">read</span> ratio<span class="br0">]</span><span class="sy0">;</span></pre></div></div></div></div></div></div></div>
+
+
+<p>If your write:read ratio to these indexes is already &gt; 1 (or &gt; 10!), I think it gives reason for pause before blindly creating an index that could only increase this ratio. The number of <code>potential_read_ops</code> shown, however, may offset that as the number becomes larger. If the <code>potential_read_ops</code> number is very small, you probably want to ignore the recommendation entirely before even bothering to investigate the other metrics – so you could add a <code>WHERE</code> clause to filter some of those recommendations out. </p>
+<p>A couple of notes:</p>
+<ol>
+<li>These are read and write operations, not individually measured reads and writes of 8K pages.</li>
+<li>The ratio and comparisons are largely educational; it could very well be the case that 10,000,000 write operations all affected a single row, while 10 read operations could have had substantially more impact. This is just meant as a rough guideline and assumes that read and write operations are weighted roughly the same.</li>
+<li>You may also use slights variations on some of these queries to find out – outside of the missing indexes SQL Server is recommending – how many of your current indexes are wasteful. There are plenty of ideas about this online, including <a href="http://www.sqlskills.com/blogs/paul/indexes-from-every-angle-how-can-you-tell-if-an-index-is-being-used/" title="http://www.sqlskills.com/blogs/paul/indexes-from-every-angle-how-can-you-tell-if-an-index-is-being-used/" target="_blank">this post by Paul Randal</a> (<a href="http://twitter.com/PaulRandal" title="http://twitter.com/PaulRandal" target="_blank">@PaulRandal</a>).
+</li></ol>
+<p>I hope that gives some ideas for gaining more insight into your system's behavior before you decide to add an index that some tool told you to create. I could have created this as one massive query, but I think the individual parts will give you some rabbit holes to investigate, if you so wish.</p>
+<h4>Other notes</h4>
+<p>You may also want to extend this to capture current size metrics, the width of the table, and the number of current rows (as well as any predictions about future growth); this can give you a good idea of how much space a new index will take up, which can be a concern depending on your environment. I may treat this in a future post.</p>
+<p>Of course, you have to keep in mind that these metrics are only as useful as your uptime dictates. The DMVs are cleared out after a restart (and sometimes in other, less disruptive scenarios), so if you think this information will be useful over a longer period of time, taking periodic snapshots may be something you want to consider.</p>
+<div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this post:</h3><div class="sd-content"><ul><li class="share-facebook"><a rel="nofollow" data-shared="sharing-facebook-4259" class="share-facebook sd-button share-icon" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index?share=facebook&amp;nb=1" target="_blank" title="Click to share on Facebook"><span>Facebook</span></a></li><li class="share-twitter"><a rel="nofollow" data-shared="sharing-twitter-4259" class="share-twitter sd-button share-icon" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index?share=twitter&amp;nb=1" target="_blank" title="Click to share on Twitter"><span>Twitter</span></a></li><li class="share-linkedin"><a rel="nofollow" data-shared="sharing-linkedin-4259" class="share-linkedin sd-button share-icon" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index?share=linkedin&amp;nb=1" target="_blank" title="Click to share on LinkedIn"><span>LinkedIn<span class="share-count">4</span></span></a></li><li class="share-end"></li></ul></div></div></div> 
+    </div>
+</article>    <div class="clear"></div>
+    
+<div id="comments" class="comments-area">
+      <h2 class="comments-title">
+      14 thoughts on “Don't just blindly create those "missing" indexes!”</h2>
+            <ol class="comment-list">
+        		<li class="comment even thread-even depth-1" id="comment-24652">
+				<div id="div-comment-24652" class="comment-body">
+				<div class="comment-author vcard">
+						<cite class="fn">John Alan</cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata"><a href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index#comment-24652">
+			June 8, 2013 at 9:01 AM</a>		</div>
+
+		<p>Interesting take on cost estimation of  'missing' indexes. On existing indexes of course we can figure out number of seeks, scans and lookups.<br>
+On 'missing' indexes this method is much better than pure speculation and checking for actual Read/Write usage afterwards.</p>
+<p>Thanks Kevin.</p>
+
+		<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index?replytocom=24652#respond" onclick="return addComment.moveForm( &quot;div-comment-24652&quot;, &quot;24652&quot;, &quot;respond&quot;, &quot;4259&quot; )" aria-label="Reply to John Alan">Reply</a></div>
+				</div>
+		</li><!-- #comment-## -->
+		<li class="comment odd alt thread-odd thread-alt depth-1" id="comment-25133">
+				<div id="div-comment-25133" class="comment-body">
+				<div class="comment-author vcard">
+						<cite class="fn">Jay</cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata"><a href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index#comment-25133">
+			June 12, 2013 at 12:41 PM</a>		</div>
+
+		<p>Perfect .. Awesome description on tackling the missing indexes…</p>
+
+		<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index?replytocom=25133#respond" onclick="return addComment.moveForm( &quot;div-comment-25133&quot;, &quot;25133&quot;, &quot;respond&quot;, &quot;4259&quot; )" aria-label="Reply to Jay">Reply</a></div>
+				</div>
+		</li><!-- #comment-## -->
+		<li class="comment even thread-even depth-1 parent" id="comment-25178">
+				<div id="div-comment-25178" class="comment-body">
+				<div class="comment-author vcard">
+						<cite class="fn">Patti</cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata"><a href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index#comment-25178">
+			June 12, 2013 at 3:45 PM</a>		</div>
+
+		<p>This is an awesome posting and I am looking to find missing indexes when I received email notice.  I would like to use this SQL but I'm not sure where to inject alternative 1 within the Plan Ops sql script.</p>
+
+		<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index?replytocom=25178#respond" onclick="return addComment.moveForm( &quot;div-comment-25178&quot;, &quot;25178&quot;, &quot;respond&quot;, &quot;4259&quot; )" aria-label="Reply to Patti">Reply</a></div>
+				</div>
+		<ol class="children">
+		<li class="comment byuser comment-author-abertrand bypostauthor odd alt depth-2" id="comment-25192">
+				<div id="div-comment-25192" class="comment-body">
+				<div class="comment-author vcard">
+						<cite class="fn">Aaron Bertrand</cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata"><a href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index#comment-25192">
+			June 12, 2013 at 6:42 PM</a>		</div>
+
+		<p>Patti, the alternative replaces everything after <code>CREATE TABLE #planops(...);</code> in the previous code block (so from <code>DECLARE @sql ...</code> to <code>INSERT #planops ...</code>.</p>
+
+		<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index?replytocom=25192#respond" onclick="return addComment.moveForm( &quot;div-comment-25192&quot;, &quot;25192&quot;, &quot;respond&quot;, &quot;4259&quot; )" aria-label="Reply to Aaron Bertrand">Reply</a></div>
+				</div>
+		</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+		<li class="comment even thread-odd thread-alt depth-1" id="comment-25375">
+				<div id="div-comment-25375" class="comment-body">
+				<div class="comment-author vcard">
+						<cite class="fn">Patrick Ge</cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata"><a href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index#comment-25375">
+			June 14, 2013 at 1:00 AM</a>		</div>
+
+		<p>Thanks Aaron. A very nice post looking into "missing" index in such a methodic way. Definitely worth sharing with guys in my team.</p>
+
+		<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index?replytocom=25375#respond" onclick="return addComment.moveForm( &quot;div-comment-25375&quot;, &quot;25375&quot;, &quot;respond&quot;, &quot;4259&quot; )" aria-label="Reply to Patrick Ge">Reply</a></div>
+				</div>
+		</li><!-- #comment-## -->
+		<li id="comment-26269" class="pingback odd alt thread-even depth-1">
+			<div class="comment-body">
+				Pingback: <a href="http://www.sqlskills.com/blogs/kimberly/accidentaldba_indexingdmvs/" rel="external nofollow" class="url">The Accidental DBA (Day 20 of 30): Are your indexing strategies working? (aka Indexing DMVs) - Kimberly L. Tripp</a> 			</div>
+</li><!-- #comment-## -->
+		<li class="comment even thread-odd thread-alt depth-1" id="comment-29010">
+				<div id="div-comment-29010" class="comment-body">
+				<div class="comment-author vcard">
+						<cite class="fn"><a href="http://sabuv.wordpress.com/" rel="external nofollow" class="url">sabuv</a></cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata"><a href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index#comment-29010">
+			July 9, 2013 at 3:10 AM</a>		</div>
+
+		<p>Thank You Aaron. This is an awesome treat for us.</p>
+
+		<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index?replytocom=29010#respond" onclick="return addComment.moveForm( &quot;div-comment-29010&quot;, &quot;29010&quot;, &quot;respond&quot;, &quot;4259&quot; )" aria-label="Reply to sabuv">Reply</a></div>
+				</div>
+		</li><!-- #comment-## -->
+		<li class="comment odd alt thread-even depth-1 parent" id="comment-36776">
+				<div id="div-comment-36776" class="comment-body">
+				<div class="comment-author vcard">
+						<cite class="fn">Aditya</cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata"><a href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index#comment-36776">
+			September 3, 2013 at 9:04 AM</a>		</div>
+
+		<p>In Plan Operation step we calculated Scan/Seeks/Updates for indexes in cached plan which existed on tables which were found in missing index report but we never used it in Final Step (putting in all together )  , what would be your suggestion in analyzing that data when making a decision of creating missing index ?</p>
+
+		<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index?replytocom=36776#respond" onclick="return addComment.moveForm( &quot;div-comment-36776&quot;, &quot;36776&quot;, &quot;respond&quot;, &quot;4259&quot; )" aria-label="Reply to Aditya">Reply</a></div>
+				</div>
+		<ol class="children">
+		<li class="comment byuser comment-author-abertrand bypostauthor even depth-2" id="comment-36812">
+				<div id="div-comment-36812" class="comment-body">
+				<div class="comment-author vcard">
+						<cite class="fn">Aaron Bertrand</cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata"><a href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index#comment-36812">
+			September 3, 2013 at 3:25 PM</a>		</div>
+
+		<p>The whole point is that I can't give you a suggestion – there is no magic formula that says you have this many seeks or this many updates, so create or don't create the index. You need to weigh the information, run tests, etc. to determine whether the index is a good idea for your schema, and your query patterns, on your hardware and your environment / version of SQL Server. My post was meant to simply urge you to step back and look at all of the information you have available to you, which I am seeing more of but not enough.</p>
+
+		<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index?replytocom=36812#respond" onclick="return addComment.moveForm( &quot;div-comment-36812&quot;, &quot;36812&quot;, &quot;respond&quot;, &quot;4259&quot; )" aria-label="Reply to Aaron Bertrand">Reply</a></div>
+				</div>
+		</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+		<li class="comment odd alt thread-odd thread-alt depth-1" id="comment-36779">
+				<div id="div-comment-36779" class="comment-body">
+				<div class="comment-author vcard">
+						<cite class="fn">Aditya</cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata"><a href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index#comment-36779">
+			September 3, 2013 at 9:29 AM</a>		</div>
+
+		<p>In my case after Plan Operation step using alternative #1 ,in #planops table scan/seek/update columns are either 0 or 1 ,  though usecount for the plan is high in some cases , I'm running these queries on sql server 2008 r2 sp1 ?</p>
+
+		<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index?replytocom=36779#respond" onclick="return addComment.moveForm( &quot;div-comment-36779&quot;, &quot;36779&quot;, &quot;respond&quot;, &quot;4259&quot; )" aria-label="Reply to Aditya">Reply</a></div>
+				</div>
+		</li><!-- #comment-## -->
+		<li class="comment even thread-even depth-1" id="comment-40937">
+				<div id="div-comment-40937" class="comment-body">
+				<div class="comment-author vcard">
+						<cite class="fn">Curtis</cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata"><a href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index#comment-40937">
+			September 29, 2013 at 3:22 PM</a>		</div>
+
+		<p>Great post…cuts down on my analysis time</p>
+
+		<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index?replytocom=40937#respond" onclick="return addComment.moveForm( &quot;div-comment-40937&quot;, &quot;40937&quot;, &quot;respond&quot;, &quot;4259&quot; )" aria-label="Reply to Curtis">Reply</a></div>
+				</div>
+		</li><!-- #comment-## -->
+		<li class="comment odd alt thread-odd thread-alt depth-1" id="comment-54688">
+				<div id="div-comment-54688" class="comment-body">
+				<div class="comment-author vcard">
+						<cite class="fn">Andy Steinke</cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata"><a href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index#comment-54688">
+			December 17, 2013 at 8:42 PM</a>		</div>
+
+		<p>Excellent article!  This is exactly the kind of information I would want to use when evaluating indices to create.  Way to put it all together!</p>
+
+		<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index?replytocom=54688#respond" onclick="return addComment.moveForm( &quot;div-comment-54688&quot;, &quot;54688&quot;, &quot;respond&quot;, &quot;4259&quot; )" aria-label="Reply to Andy Steinke">Reply</a></div>
+				</div>
+		</li><!-- #comment-## -->
+		<li id="comment-88840" class="pingback even thread-even depth-1">
+			<div class="comment-body">
+				Pingback: <a href="http://dbcouncil.net/2014/06/27/sql-server-is-my-table-indexing-optimal-2/" rel="external nofollow" class="url">Recommendations for optimal indexing for SQL server tables! | DBCouncil</a> 			</div>
+</li><!-- #comment-## -->
+		<li id="comment-127710" class="pingback odd alt thread-odd thread-alt depth-1">
+			<div class="comment-body">
+				Pingback: <a href="https://www.sqlskills.com/blogs/kimberly/the-accidental-dba-day-20-of-30-are-your-indexing-strategies-working-aka-indexing-dmvs/" rel="external nofollow" class="url">The Accidental DBA (Day 20 of 30): Are your indexing strategies working? (aka Indexing DMVs) - Kimberly L. Tripp</a> 			</div>
+</li><!-- #comment-## -->
+      </ol>          	<div id="respond" class="comment-respond">
+		<h2 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index#respond" style="display:none;">Cancel reply</a></small></h2>			<form action="https://sqlperformance.com/wp-comments-post.php?wpe-comment-post=sqlperformance" method="post" id="commentform" class="comment-form">
+				<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" aria-required="true" required="required"></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" aria-required="true" required="required" style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%;"></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="text" value="" size="30" maxlength="100" aria-describedby="email-notes" aria-required="true" required="required"></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="text" value="" size="30" maxlength="200"></p>
+<!-- Subscribe to Comments Reloaded version 170607 --><!-- BEGIN: subscribe to comments reloaded --><label class="plain" for="subscribe-reloaded"><input type="checkbox" name="subscribe-reloaded" id="subscribe-reloaded" value="yes"> Notify me of followup comments via e-mail. You can also <a href="https://sqlperformance.com/comment-subscriptions?srp=4259&amp;srk=a4ae1e429b3fab6780311ff888e02630&amp;sra=s&amp;srsrc=f">subscribe</a> without commenting.</label><!-- END: subscribe to comments reloaded --><p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment"> <input type="hidden" name="comment_post_ID" value="4259" id="comment_post_ID">
+<input type="hidden" name="comment_parent" id="comment_parent" value="0">
+</p><p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="401ab56acd"></p><p style="display: none;"></p>			<input type="hidden" id="ak_js" name="ak_js" value="1512296662574"></form>
+			</div><!-- #respond -->
+	</div>
+    <div class="BackToTop"><a class="headerlink" href="https://sqlperformance.com/2013/06/t-sql-queries/missing-index#top">Back to Top <img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/form-downarrow.png"></a></div>
+</div>
+
+<div class="page-footer">
+  <div class="ad1"><a target="_blank" href="https://sentryone.com/" title="SentryOne
+Sponsor &amp; Curator"><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/SentryOne.png" class="img1" alt="SentryOne
+Sponsor &amp; Curator" "=""></a></div>
+  <div class="ad2"><a target="_blank" href="https://sqlskills.com/" title="SQLskills
+Contributor &amp; Partner"><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/SQLskills_footer.png" class="img2" alt="SQLskills
+Contributor &amp; Partner"></a></div>
+  <div class="banner-ad"><a target="_blank" href="https://sentryone.com/platform?utm_source=sqlperformance&amp;utm_medium=banner&amp;utm_campaign=Platform-icons"><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/SQLPerf-SOBott.png" alt="SentryOne Platform"></a></div>
+  <div class="copy-write">Design and content © 2012-2017 SQL Sentry, LLC. &nbsp;All rights reserved. &nbsp;User contributions are licensed under <a target="_blank" href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons">cc-sa with attribution required</a>.</div>
+</div>
+<script async="" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/widgets.js.download" charset="utf-8"></script>
+<!-- Powered by WPtouch: 4.3.21 -->	<div style="display:none">
+	</div>
+
+	<script type="text/javascript">
+		window.WPCOM_sharing_counts = {"https:\/\/sqlperformance.com\/2013\/06\/t-sql-queries\/missing-index":4259};
+	</script>
+<script type="text/javascript" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/devicepx-jetpack.js.download"></script>
+<script type="text/javascript" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/comment-reply.min.js.download"></script>
+<script type="text/javascript" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/wp-embed.min.js.download"></script>
+<script async="async" type="text/javascript" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/form.js.download"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var sharing_js_options = {"lang":"en","counts":"1"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/sharing.js.download"></script>
+<script type="text/javascript">
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-facebook', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-twitter', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-linkedin', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomlinkedin', 'menubar=1,resizable=1,width=580,height=450' );
+				return false;
+			});
+</script>
+<script type="text/javascript" src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/e-201748.js.download" async="" defer=""></script>
+<script type="text/javascript">
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:5.5.1',blog:'38997029',post:'4259',tz:'0',srv:'sqlperformance.com'} ]);
+	_stq.push([ 'clickTrackerInit', '38997029', '4259' ]);
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ ga('create', 'UA-403212-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+<span style="border-radius: 3px; text-indent: 20px; width: auto; padding: 0px 4px 0px 0px; text-align: center; font-style: normal; font-variant: normal; font-weight: bold; font-stretch: normal; font-size: 11px; line-height: 20px; font-family: &quot;Helvetica Neue&quot;, Helvetica, sans-serif; color: rgb(255, 255, 255); background: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMzBweCIgd2lkdGg9IjMwcHgiIHZpZXdCb3g9Ii0xIC0xIDMxIDMxIj48Zz48cGF0aCBkPSJNMjkuNDQ5LDE0LjY2MiBDMjkuNDQ5LDIyLjcyMiAyMi44NjgsMjkuMjU2IDE0Ljc1LDI5LjI1NiBDNi42MzIsMjkuMjU2IDAuMDUxLDIyLjcyMiAwLjA1MSwxNC42NjIgQzAuMDUxLDYuNjAxIDYuNjMyLDAuMDY3IDE0Ljc1LDAuMDY3IEMyMi44NjgsMC4wNjcgMjkuNDQ5LDYuNjAxIDI5LjQ0OSwxNC42NjIiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+PHBhdGggZD0iTTE0LjczMywxLjY4NiBDNy41MTYsMS42ODYgMS42NjUsNy40OTUgMS42NjUsMTQuNjYyIEMxLjY2NSwyMC4xNTkgNS4xMDksMjQuODU0IDkuOTcsMjYuNzQ0IEM5Ljg1NiwyNS43MTggOS43NTMsMjQuMTQzIDEwLjAxNiwyMy4wMjIgQzEwLjI1MywyMi4wMSAxMS41NDgsMTYuNTcyIDExLjU0OCwxNi41NzIgQzExLjU0OCwxNi41NzIgMTEuMTU3LDE1Ljc5NSAxMS4xNTcsMTQuNjQ2IEMxMS4xNTcsMTIuODQyIDEyLjIxMSwxMS40OTUgMTMuNTIyLDExLjQ5NSBDMTQuNjM3LDExLjQ5NSAxNS4xNzUsMTIuMzI2IDE1LjE3NSwxMy4zMjMgQzE1LjE3NSwxNC40MzYgMTQuNDYyLDE2LjEgMTQuMDkzLDE3LjY0MyBDMTMuNzg1LDE4LjkzNSAxNC43NDUsMTkuOTg4IDE2LjAyOCwxOS45ODggQzE4LjM1MSwxOS45ODggMjAuMTM2LDE3LjU1NiAyMC4xMzYsMTQuMDQ2IEMyMC4xMzYsMTAuOTM5IDE3Ljg4OCw4Ljc2NyAxNC42NzgsOC43NjcgQzEwLjk1OSw4Ljc2NyA4Ljc3NywxMS41MzYgOC43NzcsMTQuMzk4IEM4Ljc3NywxNS41MTMgOS4yMSwxNi43MDkgOS43NDksMTcuMzU5IEM5Ljg1NiwxNy40ODggOS44NzIsMTcuNiA5Ljg0LDE3LjczMSBDOS43NDEsMTguMTQxIDkuNTIsMTkuMDIzIDkuNDc3LDE5LjIwMyBDOS40MiwxOS40NCA5LjI4OCwxOS40OTEgOS4wNCwxOS4zNzYgQzcuNDA4LDE4LjYyMiA2LjM4NywxNi4yNTIgNi4zODcsMTQuMzQ5IEM2LjM4NywxMC4yNTYgOS4zODMsNi40OTcgMTUuMDIyLDYuNDk3IEMxOS41NTUsNi40OTcgMjMuMDc4LDkuNzA1IDIzLjA3OCwxMy45OTEgQzIzLjA3OCwxOC40NjMgMjAuMjM5LDIyLjA2MiAxNi4yOTcsMjIuMDYyIEMxNC45NzMsMjIuMDYyIDEzLjcyOCwyMS4zNzkgMTMuMzAyLDIwLjU3MiBDMTMuMzAyLDIwLjU3MiAxMi42NDcsMjMuMDUgMTIuNDg4LDIzLjY1NyBDMTIuMTkzLDI0Ljc4NCAxMS4zOTYsMjYuMTk2IDEwLjg2MywyNy4wNTggQzEyLjA4NiwyNy40MzQgMTMuMzg2LDI3LjYzNyAxNC43MzMsMjcuNjM3IEMyMS45NSwyNy42MzcgMjcuODAxLDIxLjgyOCAyNy44MDEsMTQuNjYyIEMyNy44MDEsNy40OTUgMjEuOTUsMS42ODYgMTQuNzMzLDEuNjg2IiBmaWxsPSIjYmQwODFjIj48L3BhdGg+PC9nPjwvc3ZnPg==&quot;) 3px 50% / 14px 14px no-repeat rgb(189, 8, 28); position: absolute; opacity: 1; z-index: 8675309; display: none; cursor: pointer; border: none; -webkit-font-smoothing: antialiased; top: 329px; left: 40px;">Save</span><span style="width: 24px; height: 24px; background: url(&quot;data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pjxzdmcgd2lkdGg9IjI0cHgiIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxkZWZzPjxtYXNrIGlkPSJtIj48cmVjdCBmaWxsPSIjZmZmIiB4PSIwIiB5PSIwIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHJ4PSI2IiByeT0iNiIvPjxyZWN0IGZpbGw9IiMwMDAiIHg9IjUiIHk9IjUiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNCIgcng9IjEiIHJ5PSIxIi8+PHJlY3QgZmlsbD0iIzAwMCIgeD0iMTAiIHk9IjAiIHdpZHRoPSI0IiBoZWlnaHQ9IjI0Ii8+PHJlY3QgZmlsbD0iIzAwMCIgeD0iMCIgeT0iMTAiIHdpZHRoPSIyNCIgaGVpZ2h0PSI0Ii8+PC9tYXNrPjwvZGVmcz48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9IiNmZmYiIG1hc2s9InVybCgjbSkiLz48L3N2Zz4=&quot;) 50% 50% / 14px 14px no-repeat rgba(0, 0, 0, 0.4); position: absolute; opacity: 1; z-index: 8675309; display: none; cursor: pointer; border: none; border-radius: 12px; top: 327px; left: 189px;"></span><img src="./Don&#39;t just blindly create that missing index! SQLPerformance_files/g.gif" alt=":)" width="6" height="5" id="wpstats"></body></html>

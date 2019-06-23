@@ -1,0 +1,28 @@
+-- ==========================================================================================
+BEGIN TRANSACTION [Tran1]
+BEGIN TRY
+	PRINT 'do work'
+-- ==========================================================================================
+	COMMIT TRANSACTION [Tran1]
+END TRY
+BEGIN CATCH
+	ROLLBACK TRANSACTION [Tran1]
+	DECLARE @errMsg VARCHAR(500) = ERROR_MESSAGE()
+	, @errState INT = ERROR_STATE()
+	, @errSeverity int = ERROR_SEVERITY()
+	
+     SELECT 
+        ERROR_NUMBER() AS ErrorNumber,
+        ERROR_SEVERITY() AS ErrorSeverity,
+        ERROR_STATE() as ErrorState,
+        ERROR_PROCEDURE() as ErrorProcedure,
+        ERROR_LINE() as ErrorLine,
+        ERROR_MESSAGE() as ErrorMessage;
+---------------------------------------------------------
+--INSERT INTO dbo.Failures (errorMsg)
+--VALUES (@errMsg)
+---------------------------------------------------------
+	RAISERROR(@errMsg, @errSeverity, @errState);
+
+END CATCH  
+-- ==========================================================================================
